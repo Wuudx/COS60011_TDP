@@ -1,7 +1,16 @@
+import 'package:council_reporting/data/db.dart';
 import 'package:flutter/material.dart';
+import 'package:council_reporting/data/page_navigation.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    Provider<DeviceDatabase>(
+      create: (context) => DeviceDatabase(),
+      child: const MyApp(),
+      dispose: (context, db) => db.close(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,6 +33,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
+      initialRoute: PageName.testPages,
+      onGenerateRoute: PageRoutes.generateRoute,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
