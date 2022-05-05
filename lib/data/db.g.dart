@@ -6,7 +6,7 @@ part of 'db.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class User extends DataClass implements Insertable<User> {
   final int id;
   final String deviceId;
@@ -283,43 +283,52 @@ class UsersCompanion extends UpdateCompanion<User> {
 }
 
 class $UsersTable extends Users with TableInfo<$UsersTable, User> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $UsersTable(this._db, [this._alias]);
+  $UsersTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _deviceIdMeta = const VerificationMeta('deviceId');
+  @override
   late final GeneratedColumn<String?> deviceId = GeneratedColumn<String?>(
       'device_id', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
+  @override
   late final GeneratedColumn<String?> firstName = GeneratedColumn<String?>(
       'first_name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _lastNameMeta = const VerificationMeta('lastName');
+  @override
   late final GeneratedColumn<String?> lastName = GeneratedColumn<String?>(
       'last_name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
   late final GeneratedColumn<String?> email = GeneratedColumn<String?>(
       'email', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _mobileMeta = const VerificationMeta('mobile');
+  @override
   late final GeneratedColumn<String?> mobile = GeneratedColumn<String?>(
       'mobile', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _pointsMeta = const VerificationMeta('points');
+  @override
   late final GeneratedColumn<int?> points = GeneratedColumn<int?>(
       'points', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
   final VerificationMeta _lastUpdateMeta = const VerificationMeta('lastUpdate');
+  @override
   late final GeneratedColumn<DateTime?> lastUpdate = GeneratedColumn<DateTime?>(
       'last_update', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [id, deviceId, firstName, lastName, email, mobile, points, lastUpdate];
@@ -388,7 +397,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
   @override
   $UsersTable createAlias(String alias) {
-    return $UsersTable(_db, alias);
+    return $UsersTable(attachedDatabase, alias);
   }
 }
 
@@ -787,67 +796,80 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
 }
 
 class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $IssuesTable(this._db, [this._alias]);
+  $IssuesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _internalIssueIdMeta =
       const VerificationMeta('internalIssueId');
+  @override
   late final GeneratedColumn<int?> internalIssueId = GeneratedColumn<int?>(
       'internal_issue_id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _serverIssueIdMeta =
       const VerificationMeta('serverIssueId');
+  @override
   late final GeneratedColumn<int?> serverIssueId = GeneratedColumn<int?>(
       'server_issue_id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _userServerIdMeta =
       const VerificationMeta('userServerId');
+  @override
   late final GeneratedColumn<int?> userServerId = GeneratedColumn<int?>(
       'user_server_id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _addressMeta = const VerificationMeta('address');
+  @override
   late final GeneratedColumn<String?> address = GeneratedColumn<String?>(
       'address', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _latMeta = const VerificationMeta('lat');
+  @override
   late final GeneratedColumn<double?> lat = GeneratedColumn<double?>(
       'lat', aliasedName, true,
-      typeName: 'REAL', requiredDuringInsert: false);
+      type: const RealType(), requiredDuringInsert: false);
   final VerificationMeta _longMeta = const VerificationMeta('long');
+  @override
   late final GeneratedColumn<double?> long = GeneratedColumn<double?>(
       'long', aliasedName, true,
-      typeName: 'REAL', requiredDuringInsert: false);
+      type: const RealType(), requiredDuringInsert: false);
   final VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
   late final GeneratedColumn<String?> status = GeneratedColumn<String?>(
       'status', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _voteMeta = const VerificationMeta('vote');
+  @override
   late final GeneratedColumn<int?> vote = GeneratedColumn<int?>(
       'vote', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
   final VerificationMeta _categoryLvl1Meta =
       const VerificationMeta('categoryLvl1');
+  @override
   late final GeneratedColumn<int?> categoryLvl1 = GeneratedColumn<int?>(
       'category_lvl1', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _categoryLvl2Meta =
       const VerificationMeta('categoryLvl2');
+  @override
   late final GeneratedColumn<int?> categoryLvl2 = GeneratedColumn<int?>(
       'category_lvl2', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _categoryLvl3Meta =
       const VerificationMeta('categoryLvl3');
+  @override
   late final GeneratedColumn<int?> categoryLvl3 = GeneratedColumn<int?>(
       'category_lvl3', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
   late final GeneratedColumn<String?> notes = GeneratedColumn<String?>(
       'notes', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         internalIssueId,
@@ -949,7 +971,7 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
 
   @override
   $IssuesTable createAlias(String alias) {
-    return $IssuesTable(_db, alias);
+    return $IssuesTable(attachedDatabase, alias);
   }
 }
 
@@ -1094,24 +1116,28 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
 }
 
 class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PhotosTable(this._db, [this._alias]);
+  $PhotosTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
   late final GeneratedColumn<String?> data = GeneratedColumn<String?>(
       'data', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _internalIssueIdMeta =
       const VerificationMeta('internalIssueId');
+  @override
   late final GeneratedColumn<int?> internalIssueId = GeneratedColumn<int?>(
       'internal_issue_id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, data, internalIssueId];
   @override
@@ -1153,7 +1179,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
 
   @override
   $PhotosTable createAlias(String alias) {
-    return $PhotosTable(_db, alias);
+    return $PhotosTable(attachedDatabase, alias);
   }
 }
 
@@ -1303,22 +1329,26 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
 
 class $CategoriesTable extends Categories
     with TableInfo<$CategoriesTable, Category> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CategoriesTable(this._db, [this._alias]);
+  $CategoriesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
+  @override
   late final GeneratedColumn<String?> description = GeneratedColumn<String?>(
       'description', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _parentIdMeta = const VerificationMeta('parentId');
+  @override
   late final GeneratedColumn<int?> parentId = GeneratedColumn<int?>(
       'parent_id', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [id, description, parentId];
   @override
@@ -1360,7 +1390,7 @@ class $CategoriesTable extends Categories
 
   @override
   $CategoriesTable createAlias(String alias) {
-    return $CategoriesTable(_db, alias);
+    return $CategoriesTable(attachedDatabase, alias);
   }
 }
 
@@ -1564,34 +1594,40 @@ class UserVotesCompanion extends UpdateCompanion<UserVote> {
 
 class $UserVotesTable extends UserVotes
     with TableInfo<$UserVotesTable, UserVote> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $UserVotesTable(this._db, [this._alias]);
+  $UserVotesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
   late final GeneratedColumn<String?> data = GeneratedColumn<String?>(
       'data', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _serverIssueIdMeta =
       const VerificationMeta('serverIssueId');
+  @override
   late final GeneratedColumn<int?> serverIssueId = GeneratedColumn<int?>(
       'server_issue_id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _issueDescriptionMeta =
       const VerificationMeta('issueDescription');
+  @override
   late final GeneratedColumn<String?> issueDescription =
       GeneratedColumn<String?>('issue_description', aliasedName, false,
-          typeName: 'TEXT', requiredDuringInsert: true);
+          type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _internalIssueIdMeta =
       const VerificationMeta('internalIssueId');
+  @override
   late final GeneratedColumn<int?> internalIssueId = GeneratedColumn<int?>(
       'internal_issue_id', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, data, serverIssueId, issueDescription, internalIssueId];
@@ -1650,7 +1686,7 @@ class $UserVotesTable extends UserVotes
 
   @override
   $UserVotesTable createAlias(String alias) {
-    return $UserVotesTable(_db, alias);
+    return $UserVotesTable(attachedDatabase, alias);
   }
 }
 
