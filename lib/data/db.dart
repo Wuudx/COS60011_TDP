@@ -45,6 +45,8 @@ class Issues extends Table {
 
   IntColumn get vote => integer().withDefault(const Constant(0))();
 
+  TextColumn get description => text().nullable()();
+
   IntColumn get categoryLvl1 => integer().nullable()();
 
   IntColumn get categoryLvl2 => integer().nullable()();
