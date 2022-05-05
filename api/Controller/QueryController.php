@@ -1,28 +1,26 @@
 <?php
-class QueryController extends BaseController
-{
+class QueryController extends BaseController {
     /**
      * Get list of items
      */
-    public function listAction()
-    {
+    public function idAction() {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $arrQueryStringParams = $this->getQueryStringParams();
- 
+        $queryParams = $this->getQueryStringParams();
+
         if (strtoupper($requestMethod) == 'GET') {
             try {
-                $userModel = new GetData();
- 
-                $intLimit = 10;
-                if (isset($arrQueryStringParams['limit']) && $arrQueryStringParams['limit']) {
-                    $intLimit = $arrQueryStringParams['limit'];
+                $model = new IssueModel();
+
+                $limit = 10;
+                if (isset($queryParams['limit']) && $queryParams['limit']) {
+                    $limit = $queryParams['limit'];
                 }
- 
-                $arrUsers = $userModel->getData($intLimit);
-                $responseData = json_encode($arrUsers);
+                
+                $data = $model->getData($limit);
+                $responseData = json_encode($data);
             } catch (Error $e) {
-                $strErrorDesc = $e->getMessage().'Something went wrong! Please contact support.';
+                $strErrorDesc = $e->getMessage().' Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
             }
         } else {

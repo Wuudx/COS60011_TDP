@@ -9,5 +9,6 @@
 		<div class="container-fluid mt-3">
 		  <h3>Home page</h3>
 		</div>
+		<?php require_once('includes/footer.php'); ?>
 	</body>
 </html>
