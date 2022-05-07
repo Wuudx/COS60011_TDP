@@ -1,20 +1,16 @@
 <?php
 require __DIR__ . "/inc/bootstrap.php";
-require PROJECT_ROOT_PATH . "/Controller/QueryController.php";
+require PROJECT_ROOT_PATH . "/Controller/IssueController.php";
 
-echo "<h1>";
-// // echo var_dump($objFeedController);
-echo $uri[2];
-// $test = parse_str($_SERVER['QUERY_STRING'], $query);
-// echo $test['limit'];
-echo "</h1>";
 
-$objFeedController = new QueryController();
-$strMethodName = $uri[2] . 'Action';
-$objFeedController->{$strMethodName}();
-// echo "<h1>";
-// // echo var_dump($objFeedController);
-// echo "</h1>";
-// 
-
+if (isset($uri[2]) && $uri[2] == 'issue') { // Issue Model
+    $controller = new IssueController();
+    $controller->issueAction();
+} else { // Invalid endpoint - no model found
+    $strErrorDesc = 'Method not supported';
+    $strErrorHeader = 'HTTP/1.1 400 Bad Request';
+    $controller = new BaseController();
+    $controller->sendOutput(json_encode(array('error' => $strErrorDesc)), 
+    array('Content-Type: application/json', $strErrorHeader));
+}
 ?>
