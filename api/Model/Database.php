@@ -16,13 +16,37 @@ class Database {
  
     public function select($query = "", $params = []) {
         try {
-            $stmt = $this->executeStatement($query , $params);
+            $stmt = $this->executeStatement($query, $params);
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);               
             $stmt->close();
  
             return $result;
         } catch (Exception $e) {
-            throw New Exception( $e->getMessage() );
+            throw New Exception($e->getMessage());
+        }
+        return false;
+    }
+
+    public function insert($query = "", $params = []) {
+        try {
+            $stmt = $this->executeStatement($query, $params);
+            $result = $stmt->affected_rows;
+
+            return $result;
+        } catch (Error $e) {
+            throw New Exception($e->getMessage());
+        }
+        return false;
+    }
+
+    public function update($query = '', $params = []) {
+        try {
+            $stmt = $this->executeStatement($query, $params);
+            $result = $stmt->affected_rows;
+
+            return $result;
+        } catch (Error $e) {
+            throw New Exception($e->getMessage());
         }
         return false;
     }
@@ -36,14 +60,16 @@ class Database {
             }
  
             if ($params) {
-                $stmt->bind_param($params[0], $params[1]);
+                $paramTypes = str_repeat('s', count($params));
+
+                $stmt->bind_param($paramTypes, ...$params);
             }
  
             $stmt->execute();
  
             return $stmt;
         } catch(Exception $e) {
-            throw New Exception( $e->getMessage() );
+            throw New Exception($e->getMessage());
         }   
     }
 }
