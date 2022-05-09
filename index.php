@@ -9,9 +9,9 @@ $uri = explode("/", $uri);
 session_start();
 
 // If user not logged in redirect to login 
-if($uri[1] != 'login' && !isset($_SESSION["loggedin"])){
-    //header("location: login");
-    //exit;
+if(!in_array($uri[1], ['login', 'api']) && !isset($_SESSION["loggedin"])) {
+    header("location: login");
+    exit;
 }
 
 //echo "<h2>$route</h2>";
@@ -19,10 +19,14 @@ if($uri[1] != 'login' && !isset($_SESSION["loggedin"])){
 switch ($uri[1]) {
     case '/' :
     case '' :
+    case 'home' :
         require __DIR__ . '/views/home.php';
         break;
     case 'login' :
         require __DIR__ . '/views/login.php';
+        break;
+    case 'logout' :
+        require __DIR__ . '/includes/logout.php';
         break;
 	case 'profile' :
         require __DIR__ . '/views/profile.php';
