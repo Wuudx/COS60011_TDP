@@ -50,6 +50,18 @@ class Database {
         }
         return false;
     }
+
+    public function delete($query = '', $params = []) {
+        try {
+            $stmt = $this->executeStatement($query, $params);
+            $result = $stmt->affected_rows;
+
+            return $result;
+        } catch (Error $e) {
+            throw New Exception($e->getMessage());
+        }
+        return false;
+    }
  
     private function executeStatement($query = "", $params = []) {
         try {
