@@ -47,15 +47,15 @@ class IssueModel extends Database {
         
         if ($params) { // If there are SET arguments appending that to the query
             foreach ($params as $key=>$value) { // Filling the temp array with SET clause variables
-                array_push($paramNames, $key . '=?'); // Array push -> name=?
+                array_push($paramNames, $key . '`=?'); // Array push -> name=?
             }
             
-            $query .= ' SET ' . implode(' AND ', $paramNames);
+            $query .= ' SET `' . implode(' AND `', $paramNames);
         }
 
         $params = $params + array('issue_id'=>$issueID); // Adding issue_id back for correct sql binding
 
-        $query .= ' WHERE issue_id=?';
+        $query .= ' WHERE `issue_id`=?';
 
         return $this->update($query, array_values($params));
     }
@@ -67,10 +67,10 @@ class IssueModel extends Database {
 
         if ($params) { // If there are WHERE arguments appending that to the query
             foreach ($params as $key=>$value) { // Filling the temp array with where clause variables
-                array_push($paramNames, $key . '=?'); // Array push var=?
+                array_push($paramNames, $key . '`=?'); // Array push var=?
             }
             
-            $query .= ' WHERE ' . implode(' AND ', $paramNames);
+            $query .= ' WHERE `' . implode(' AND `', $paramNames);
         } else { // NO ARGUMENTS GIVEN - DO NOT DELETE ALL DATA - SHOULD NEVER BE HERE... BUT JUST INCASE
             $query = '';
         }
