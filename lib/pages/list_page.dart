@@ -1,8 +1,6 @@
-import 'package:council_reporting/data/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:provider/provider.dart';
 
 import '../data/numbers.dart';
 import '../data/strings.dart';
@@ -11,8 +9,9 @@ import '../data/textstyles.dart';
 class ListPage extends StatefulWidget {
   final int? intFilter;
   final String? textFilter;
+  final List<dynamic> list;
 
-  const ListPage({Key? key, this.intFilter, this.textFilter}) : super(key: key);
+  const ListPage(this.list, {Key? key, this.intFilter, this.textFilter}) : super(key: key);
 
   @override
   _ListPageState createState() => _ListPageState();
@@ -20,22 +19,17 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   String subtext = '';
-  late DeviceDatabase database;
   List<dynamic> listToShow = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    database = Provider.of<DeviceDatabase>(context, listen: false);
     getData();
   }
 
   getData() async {
-    List<dynamic> list;
-    list = await database.getCategories(widget.intFilter);
-
     setState(() {
-      listToShow = list;
+      listToShow = widget.list.where((element) => element.description.contains(subtext)).toList();
     });
   }
 

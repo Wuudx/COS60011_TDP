@@ -181,57 +181,207 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   Widget build(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-              Navigator.of(context)
-                  .push(
-                PageRouteBuilder(
-                  pageBuilder: (_, a1, a2) => const ListPage(),
-                ),
-              )
-                  .then((value) {
-                if (value != null) {
-                  setState(() {
-                    _issue = _issue.copyWith(
-                      categoryLvl1: drift.Value(value!.id),
-                    );
-                  });
-                }
-              });
+          //region Category Level 1
+          FutureBuilder(
+            future: database.getCategories(null),
+            builder: (context, AsyncSnapshot<List<Category>> snapshot) {
+              if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                return Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        Navigator.of(context)
+                            .push(
+                          PageRouteBuilder(
+                            pageBuilder: (_, a1, a2) => ListPage(snapshot.data!),
+                          ),
+                        )
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              _issue = _issue.copyWith(
+                                categoryLvl1: drift.Value(value!.id),
+                              );
+                            });
+                          }
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              Strings.lblCategoryLvl1,
+                              style: CustomTextStyles.formTextField(Colors.black.value),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '${_issue.categoryLvl1.value ?? Strings.hntSelect}',
+                                    style: CustomTextStyles.formTextField(
+                                      Colors.black.value,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  MaterialCommunityIcons.chevron_down_circle,
+                                  size: 30,
+                                  color: Color(Colors.black.value),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    FormWidgets.divider(),
+                  ],
+                );
+              } else {
+                return Container();
+              }
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    Strings.lblCategoryLvl1,
-                    style: CustomTextStyles.formTextField(Colors.black.value),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          //endregion
+          //region Category Level 2
+          if (_issue.categoryLvl1.value != null)
+            FutureBuilder(
+              future: database.getCategories(_issue.categoryLvl1.value),
+              builder: (context, AsyncSnapshot<List<Category>> snapshot) {
+                if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                  return Column(
                     children: [
-                      Expanded(
-                        child: Text(
-                          '${_issue.categoryLvl1.value ?? Strings.hntSelect}',
-                          style: CustomTextStyles.formTextField(
-                            Colors.black.value,
+                      GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          Navigator.of(context)
+                              .push(
+                            PageRouteBuilder(
+                              pageBuilder: (_, a1, a2) => ListPage(snapshot.data!),
+                            ),
+                          )
+                              .then((value) {
+                            if (value != null) {
+                              setState(() {
+                                _issue = _issue.copyWith(
+                                  categoryLvl2: drift.Value(value!.id),
+                                );
+                              });
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Strings.lblCategoryLvl2,
+                                style: CustomTextStyles.formTextField(Colors.black.value),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${_issue.categoryLvl2.value ?? Strings.hntSelect}',
+                                      style: CustomTextStyles.formTextField(
+                                        Colors.black.value,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    MaterialCommunityIcons.chevron_down_circle,
+                                    size: 30,
+                                    color: Color(Colors.black.value),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Icon(
-                        MaterialCommunityIcons.chevron_down_circle,
-                        size: 30,
-                        color: Color(Colors.black.value),
-                      )
+                      FormWidgets.divider(),
                     ],
-                  ),
-                ],
-              ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
             ),
-          ),
-          FormWidgets.divider(),
+          //endregion
+          //region Category Level 3
+          if (_issue.categoryLvl2.value != null)
+            FutureBuilder(
+              future: database.getCategories(_issue.categoryLvl2.value),
+              builder: (context, AsyncSnapshot<List<Category>> snapshot) {
+                if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          Navigator.of(context)
+                              .push(
+                            PageRouteBuilder(
+                              pageBuilder: (_, a1, a2) => ListPage(snapshot.data!),
+                            ),
+                          )
+                              .then((value) {
+                            if (value != null) {
+                              setState(() {
+                                _issue = _issue.copyWith(
+                                  categoryLvl3: drift.Value(value!.id),
+                                );
+                              });
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Strings.lblCategoryLvl3,
+                                style: CustomTextStyles.formTextField(Colors.black.value),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${_issue.categoryLvl3.value ?? Strings.hntSelect}',
+                                      style: CustomTextStyles.formTextField(
+                                        Colors.black.value,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    MaterialCommunityIcons.chevron_down_circle,
+                                    size: 30,
+                                    color: Color(Colors.black.value),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      FormWidgets.divider(),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          //endregion
+          //#region Description
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: Row(
@@ -257,6 +407,8 @@ class _IssueFormSectionState extends State<IssueFormSection> {
             ),
           ),
           FormWidgets.divider(),
+          //#endregion
+          //#region Images
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: Row(
@@ -327,6 +479,8 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               },
             ),
           ),
+          //#endregion
+          //#region Submit Button
           FormWidgets.textButtonTB(
             Strings.btnSubmit,
             Colors.white,
@@ -365,6 +519,8 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               }
             },
           ),
+          //#endregion
+          //#region Cancel Button
           FormWidgets.textButtonTB(
             Strings.btnCancel,
             Colors.white,
@@ -373,6 +529,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               if (Navigator.of(context).canPop()) Navigator.of(context).pop(),
             },
           ),
+          //#endregion
         ],
       );
 }
