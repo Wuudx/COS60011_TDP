@@ -338,19 +338,30 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               setState(() {
                 submitPressed = true;
               });
-              // final _submittedIssue = await Api().submitIssue(_issue);
-              //
-              // if (_submittedIssue != null) {
-              //   await database.addIssue(_submittedIssue);
+              List<String> imgKeys = [];
+              for (File image in _photos) {
+                final imgKey = await Api().submitImage(image);
+                if (imgKey != null) {
+                  imgKeys.add(imgKey);
+                }
+              }
+              final _submittedIssue = await Api().submitIssue(
+                _issue.copyWith(
+                  images: drift.Value(imgKeys.join(',')),
+                ),
+              );
+
+              if (_submittedIssue != null) {
+                await database.addIssue(_submittedIssue);
+
                 for (File image in _photos) {
-                  await Api().submitImage(image);
-                  // await database.addImage(
-                  //   PhotosCompanion.insert(
-                  //     data: image.path,
-                  //     internalIssueId: _submittedIssue.internalIssueId.value,
-                  //   ),
-                  // );
-                // }
+                  await database.addImage(
+                    PhotosCompanion.insert(
+                      data: image.path,
+                      internalIssueId: _submittedIssue.internalIssueId.value,
+                    ),
+                  );
+                }
               }
             },
           ),

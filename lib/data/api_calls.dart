@@ -47,6 +47,7 @@ class Api {
           'categoryLvl1': issue.categoryLvl1,
           'categoryLvl2': issue.categoryLvl2,
           'categoryLvl3': issue.categoryLvl3,
+          'images': issue.images,
           'notes': issue.notes,
         }),
       );

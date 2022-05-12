@@ -53,6 +53,8 @@ class Issues extends Table {
 
   IntColumn get categoryLvl3 => integer().nullable()();
 
+  TextColumn get images => text().nullable()();
+
   TextColumn get notes => text().nullable()();
 
   @override
