@@ -17,6 +17,7 @@ class Api {
   Future<List<Category>?> getCategories() async {
     final response = await http.post(
       Uri.parse('https://api.com'),
+      headers: _getGetHeader(),
     );
 
     if (response.statusCode == 200) {
