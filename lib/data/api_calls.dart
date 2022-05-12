@@ -61,7 +61,7 @@ class Api {
     return null;
   }
 
-  Future<bool> submitImage(File image) async {
+  Future<String?> submitImage(File image) async {
     http.Client _client = http.Client();
     try {
       final urlResponse = await _client.get(
@@ -73,23 +73,17 @@ class Api {
         final uploadUrlAndKey = jsonDecode(urlResponse.body);
         final imageUploadedResponse = await _client.put(
           Uri.parse(uploadUrlAndKey['uploadURL']),
-
+          headers: _getImagePostHeader(),
           body: imgBytes,
         );
-        // TODO remove print statements.
-        print(Uri.parse(uploadUrlAndKey['uploadURL']));
-        print(image.path);
-        print(imageUploadedResponse.statusCode);
-        print(imageUploadedResponse.body);
-        print(imgBytes);
-        if (imageUploadedResponse.statusCode == 201) {
-          return true;
+        if (imageUploadedResponse.statusCode == 200) {
+          return uploadUrlAndKey['Key'];
         }
       }
     } catch (e) {
-      return false;
+      return null;
     }
-    return false;
+    return null;
   }
 
   Map<String, String> _getGetHeader() => {
@@ -99,6 +93,11 @@ class Api {
 
   Map<String, String> _getPostHeader() => {
         "Content-Type": "application/json",
+        "Accept": "*/*",
+      };
+
+  Map<String, String> _getImagePostHeader() => {
+        "Content-Type": "image/jpeg",
         "Accept": "*/*",
       };
 
