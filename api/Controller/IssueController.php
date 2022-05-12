@@ -44,12 +44,20 @@ class IssueController extends BaseController {
                     $requestMethod = null;
                 }
             }
+
+            else {
+                $requestMethod = null;
+            }
+        } else { // No further endpoint given - /api/issue
+            if (strtoupper($requestMethod) != ('GET'||'POST')) { // Checking request method is valid for the endpoint
+                $requestMethod = null;
+            }
         }
 
         // Assignment of the correct function for the given request method
         if (strtoupper($requestMethod) == 'GET') {
             try { // Try query
-                $data = $model->getData($queryParams);
+                $data = $model->getIssue($queryParams);
                 $responseData = json_encode($data);
             } catch (Error $e) { // Error
                 $strErrorDesc = $e->getMessage().' Something went wrong! Please contact support.';
@@ -58,7 +66,7 @@ class IssueController extends BaseController {
         } 
         elseif (strtoupper($requestMethod) == 'POST') {
             try {
-                $data = $model->postData($queryParams);
+                $data = $model->postIssue($queryParams);
                 $responseData = json_encode($data);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage(). ' Something went wrong! Please contact support.'; // TODO
@@ -68,7 +76,7 @@ class IssueController extends BaseController {
         elseif (strtoupper($requestMethod) == 'PATCH') {
             try {
                 if (isset($queryParams['issue_id']) && $queryParams['issue_id']) {
-                    $data = $model->patchData($queryParams);
+                    $data = $model->patchIssue($queryParams);
                 } else {
                     $strErrorDesc = 'No issue_id field given.';
                     $strErrorHeader = 'HTTP/1.1 400 Bad Request';
@@ -81,7 +89,7 @@ class IssueController extends BaseController {
         } 
         elseif (strtoupper($requestMethod) == 'DELETE') {
             try {
-                $data = $model->deleteData($queryParams);
+                $data = $model->deleteIssue($queryParams);
                 $responseData = json_encode($data);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage(). ' Something went wrong! Please contact support.';// TODO
