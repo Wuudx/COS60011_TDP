@@ -2,6 +2,8 @@ import 'package:council_reporting/data/page_navigation.dart';
 import 'package:council_reporting/data/path_arguments.dart';
 import 'package:flutter/material.dart';
 
+import '../data/api_calls.dart';
+
 class TestPage extends StatelessWidget {
   const TestPage({Key? key}) : super(key: key);
 
@@ -86,7 +88,7 @@ class TestPage extends StatelessWidget {
                     Navigator.of(context).pushNamed(
                       PageName.complaint,
                       arguments: BaseArguments(
-                        user: null,
+                        user: user,
                       ),
                     );
                   },

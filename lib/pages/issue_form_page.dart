@@ -1,35 +1,37 @@
 import 'package:council_reporting/data/db.dart';
-import 'package:council_reporting/data/strings.dart';
-import 'package:council_reporting/data/widgets.dart';
+import 'package:council_reporting/data/textstyles.dart';
+import 'package:council_reporting/pages/issue_form_section.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
-class IssueFormPage extends StatefulWidget {
+import '../data/geocoding.dart';
+import '../data/numbers.dart';
+
+class IssueFormPage extends StatelessWidget {
   final User? user;
+  final LocationData? location;
 
-  const IssueFormPage({required this.user, Key? key}) : super(key: key);
+  const IssueFormPage({required this.user, this.location, Key? key}) : super(key: key);
 
-  @override
-  _IssueFormPageState createState() => _IssueFormPageState();
-}
-
-class _IssueFormPageState extends State<IssueFormPage> {
-  late User? _user;
-  TextEditingController category1 = TextEditingController();
-  TextEditingController description = TextEditingController();
-  TextEditingController location = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _user = widget.user;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    category1.dispose();
-    description.dispose();
-    location.dispose();
+  Future<Widget> _locationInfo(LocationData position) async {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: Dimensions.margin15,
+      ),
+      child: Column(
+        children: [
+          await GeoCodingApi().getMap(position.latitude!, position.longitude!),
+          Text(
+            'Coordinates:',
+            style: CustomTextStyles.formTextField(Colors.black.value),
+          ),
+          Text(
+            '${position.latitude}, ${position.longitude}',
+            style: CustomTextStyles.formTextField(Colors.black.value),
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -47,83 +49,24 @@ class _IssueFormPageState extends State<IssueFormPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  Strings.lblLocation,
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                FormWidgets.nameTextField(
-                                  Colors.black,
-                                  controller: location,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  Strings.lblCategoryLvl1,
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                FormWidgets.nameTextField(
-                                  Colors.black,
-                                  controller: category1,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  Strings.lblDescription,
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                FormWidgets.nameTextField(
-                                  Colors.black,
-                                  controller: description,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    location != null
+                        ? FutureBuilder(
+                            future: _locationInfo(location!),
+                            builder: (context, AsyncSnapshot futureSnapshot) {
+                              if (futureSnapshot.hasData) {
+                                return futureSnapshot.data;
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            },
+                          )
+                        : Container(),
+                    IssueFormSection(
+                      user: user,
+                      location: location,
                     ),
                   ],
                 ),
-              ),
-              FormWidgets.textButtonTB(
-                Strings.btnSubmit,
-                Colors.white,
-                Colors.green,
-                onClick: () => {print('submitted')},
               ),
             ],
           ),

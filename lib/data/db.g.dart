@@ -6,7 +6,7 @@ part of 'db.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: type=lint
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class User extends DataClass implements Insertable<User> {
   final int id;
   final String deviceId;
@@ -679,8 +679,8 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     this.notes = const Value.absent(),
   });
   IssuesCompanion.insert({
-    this.internalIssueId = const Value.absent(),
-    required int serverIssueId,
+    required int internalIssueId,
+    this.serverIssueId = const Value.absent(),
     required int userServerId,
     this.address = const Value.absent(),
     this.lat = const Value.absent(),
@@ -692,7 +692,7 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     this.categoryLvl2 = const Value.absent(),
     this.categoryLvl3 = const Value.absent(),
     this.notes = const Value.absent(),
-  })  : serverIssueId = Value(serverIssueId),
+  })  : internalIssueId = Value(internalIssueId),
         userServerId = Value(userServerId);
   static Insertable<Issue> custom({
     Expression<int>? internalIssueId,
@@ -833,15 +833,13 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
   @override
   late final GeneratedColumn<int?> internalIssueId = GeneratedColumn<int?>(
       'internal_issue_id', aliasedName, false,
-      type: const IntType(),
-      requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _serverIssueIdMeta =
       const VerificationMeta('serverIssueId');
   @override
   late final GeneratedColumn<int?> serverIssueId = GeneratedColumn<int?>(
       'server_issue_id', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _userServerIdMeta =
       const VerificationMeta('userServerId');
   @override
@@ -934,14 +932,14 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
           _internalIssueIdMeta,
           internalIssueId.isAcceptableOrUnknown(
               data['internal_issue_id']!, _internalIssueIdMeta));
+    } else if (isInserting) {
+      context.missing(_internalIssueIdMeta);
     }
     if (data.containsKey('server_issue_id')) {
       context.handle(
           _serverIssueIdMeta,
           serverIssueId.isAcceptableOrUnknown(
               data['server_issue_id']!, _serverIssueIdMeta));
-    } else if (isInserting) {
-      context.missing(_serverIssueIdMeta);
     }
     if (data.containsKey('user_server_id')) {
       context.handle(
@@ -1003,7 +1001,7 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {internalIssueId};
+  Set<GeneratedColumn> get $primaryKey => {serverIssueId};
   @override
   Issue map(Map<String, dynamic> data, {String? tablePrefix}) {
     return Issue.fromData(data,
