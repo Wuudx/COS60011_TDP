@@ -88,9 +88,9 @@ class Api {
   }
 
   Map<String, String> _getGetHeader() => {
-    "Content-Type": "application/json",
-    "Accept": "*/*",
-  };
+        "Content-Type": "application/json",
+        "Accept": "*/*",
+      };
 
   Map<String, String> _getPostHeader() => {
         "Content-Type": "application/json",
