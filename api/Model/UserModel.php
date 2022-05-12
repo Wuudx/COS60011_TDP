@@ -26,7 +26,6 @@ class UserModel extends Database {
 
         $query .= ' ORDER BY `user_id` ASC LIMIT ?'; // Append the limit to the query
 
-        echo $query;
         return $this->select($query, array_values($params));
     }
 
