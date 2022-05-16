@@ -27,7 +27,7 @@ class Users extends Table {
 }
 
 class Issues extends Table {
-  IntColumn get internalIssueId => integer().autoIncrement()();
+  IntColumn get internalIssueId => integer()();
 
   @JsonKey("Server_Issue_ID")
   IntColumn get serverIssueId => integer()();
@@ -45,13 +45,20 @@ class Issues extends Table {
 
   IntColumn get vote => integer().withDefault(const Constant(0))();
 
+  TextColumn get description => text().nullable()();
+
   IntColumn get categoryLvl1 => integer().nullable()();
 
   IntColumn get categoryLvl2 => integer().nullable()();
 
   IntColumn get categoryLvl3 => integer().nullable()();
 
+  TextColumn get images => text().nullable()();
+
   TextColumn get notes => text().nullable()();
+
+  @override
+  Set<Column>? get primaryKey => {serverIssueId};
 }
 
 class Photos extends Table {
@@ -119,4 +126,18 @@ class DeviceDatabase extends _$DeviceDatabase {
         },
         onUpgrade: (Migrator m, int from, int to) async {},
       );
+
+  Future<int> addIssue(IssuesCompanion issue) => into(issues).insertOnConflictUpdate(issue);
+
+  Future<void> updateCategories(List<Category> list) async {
+    return transaction(() async {
+      await delete(categories).go();
+      await batch((batch) => batch.insertAll(categories, list));
+    });
+  }
+
+  Future<List<Category>> getCategories(int? id) async =>
+      (select(categories)..where((tbl) => tbl.parentId.equals(id))).get();
+
+  Future<void> addImage(PhotosCompanion image)=> into(photos).insert(image);
 }

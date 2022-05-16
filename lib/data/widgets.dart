@@ -5,6 +5,12 @@ import 'package:flutter/services.dart';
 import 'numbers.dart';
 
 class FormWidgets {
+
+  static divider() => const Divider(
+    color: Colors.black,
+    thickness: 1.0,
+    height: 5.0,
+  );
   Widget textButtonGD(
     String text,
     Color textColour,
@@ -155,7 +161,7 @@ class FormWidgets {
           counterText: counterText,
           border: border,
         ),
-        style: CustomTextStyles.formTextStyle(textColour.value),
+        style: CustomTextStyles.formTextField(textColour.value),
         keyboardType: inputType,
         inputFormatters: inputFormatters,
       );
