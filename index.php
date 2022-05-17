@@ -10,8 +10,8 @@ session_start();
 
 // If user not logged in redirect to login 
 if(!in_array($uri[1], ['login', 'api']) && !isset($_SESSION["loggedin"])) {
-    header("location: login");
-    exit;
+    //header("location: login");
+    //exit;
 }
 
 //echo "<h2>$route</h2>";
@@ -21,6 +21,9 @@ switch ($uri[1]) {
     case '' :
     case 'home' :
         require __DIR__ . '/views/home.php';
+        break;
+    case 'issues' :
+        require __DIR__ . '/views/issues.php';
         break;
     case 'login' :
         require __DIR__ . '/views/login.php';

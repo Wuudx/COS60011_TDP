@@ -10,7 +10,7 @@
         <a class="<?php if ($currentPage === '/') {echo 'active';} ?> nav-link" href="/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Issues</a>
+        <a class="<?php if ($currentPage === '/issues') {echo 'active';} ?> nav-link" href="/issues">Issues</a>
       </li>
     </ul>
     <ul class="nav navbar-nav flex-row justify-content-md-center justify-content-start flex-nowrap">
