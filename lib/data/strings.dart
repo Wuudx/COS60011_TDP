@@ -1,15 +1,32 @@
 class Strings {
+  static const btnBack = 'BACK';
   static const btnCancel = 'CANCEL';
+  static const btnClose = 'CLOSE';
+  static const btnContinue = 'CONTINUE';
+  static const btnLogIn = 'LOG IN';
+  static const btnLogOut = 'LOG OUT';
+  static const btnRegister = 'REGISTER';
   static const btnSubmit = 'SUBMIT';
+  static const hntFirstName = 'First Name';
+  static const hntLastName = 'Last Name';
+  static const hntMobile = 'Mobile';
+  static const hntSearch = 'Search...';
+  static const hntSelect = 'Select';
   static const lblCategoryLvl1 = 'Category Lvl1';
   static const lblCategoryLvl2 = 'Category Lvl2';
   static const lblCategoryLvl3 = 'Category Lvl3';
   static const lblDescription = 'Description';
   static const lblImages = 'Images';
-  static const hntSearch = 'Search...';
-  static const hntSelect = 'Select';
   static const lblLocation = 'Location';
+  static const popCheckingCode = 'Checking code.';
+  static const popCheckingNumber = 'Checking number.';
+  static const popGettingInfo = 'Getting info.';
+  static const popMobileNotExist = 'Account does not exist.\n\nSign up to create an account.';
+  static const popNoInternetDetected = 'No Internet is detected.';
+  static const popOtpNotValid = 'OTP is not valid.\n\nTry again.';
   static const txtNoItemsToShow = 'No items to show';
   static const txtNotImplemented = 'NOT CURRENTLY IMPLEMENTED';
   static const ttlSelectCategory = 'Select Category';
+  static const ttlEnterOtp = 'Enter 4-Digit OTP';
+  static const ttlWelcome = 'Welcome';
 }

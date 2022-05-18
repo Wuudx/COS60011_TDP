@@ -23,13 +23,19 @@ class PageRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case PageName.login:
+        BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
-          pageBuilder: (_, a1, a2) => const LoginPage(),
+          pageBuilder: (_, a1, a2) => LoginPage(
+            user: baseArgs.user,
+          ),
         );
 
       case PageName.otp:
+        RegisterArguments regArgs = settings.arguments as RegisterArguments;
         return PageRouteBuilder(
-          pageBuilder: (_, a1, a2) => const OtpPage(),
+          pageBuilder: (_, a1, a2) =>  OtpPage(
+            userRegistrationInfo: regArgs.userRegistrationInfo,
+          ),
         );
 
       case PageName.profile:

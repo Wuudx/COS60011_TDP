@@ -5,12 +5,11 @@ import 'package:flutter/services.dart';
 import 'numbers.dart';
 
 class FormWidgets {
-
   static divider() => const Divider(
-    color: Colors.black,
-    thickness: 1.0,
-    height: 5.0,
-  );
+        color: Colors.black,
+        thickness: 1.0,
+        height: 5.0,
+      );
   Widget textButtonGD(
     String text,
     Color textColour,
@@ -125,15 +124,18 @@ class FormWidgets {
     Color iconColour, {
     VoidCallback? onClick,
   }) =>
-      IconButton(
+      Container(
+        color: buttonColour,
+        child:IconButton(
         onPressed: onClick,
         icon: Icon(
           icon,
           size: size,
           color: iconColour,
         ),
-        color: buttonColour,
+        // color: buttonColour,
         splashColor: Colors.black12,
+      ),
       );
 
   static Widget _textField(
@@ -148,6 +150,8 @@ class FormWidgets {
     InputBorder border = InputBorder.none,
     TextInputType? inputType,
     List<TextInputFormatter>? inputFormatters,
+        bool? filled=false,
+    Color? backgroundColour,
   }) =>
       TextField(
         onChanged: onChange,
@@ -160,6 +164,8 @@ class FormWidgets {
           hintText: hintText,
           counterText: counterText,
           border: border,
+          filled: filled,
+          fillColor: backgroundColour,
         ),
         style: CustomTextStyles.formTextField(textColour.value),
         keyboardType: inputType,
@@ -176,6 +182,8 @@ class FormWidgets {
     String? hintText,
     String counterText = '',
     List<TextInputFormatter>? inputFormatters,
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -188,6 +196,8 @@ class FormWidgets {
         counterText: counterText,
         inputType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 
   static Widget anyNumberTextField(
@@ -199,6 +209,8 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -215,6 +227,8 @@ class FormWidgets {
             RegExp(r'^-?[1-9]*[0-9]?'),
           ),
         ],
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 
   static Widget decimalTextField(
@@ -226,6 +240,8 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -242,6 +258,8 @@ class FormWidgets {
             RegExp(r'^(\d+){1,15}(\.\d{0,4})?'),
           ),
         ],
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 
   static Widget mobileTextField(
@@ -253,6 +271,8 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -267,6 +287,8 @@ class FormWidgets {
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
         ],
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 
   static Widget emailTextField(
@@ -278,6 +300,8 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -289,6 +313,8 @@ class FormWidgets {
         hintText: hintText,
         counterText: counterText,
         inputType: TextInputType.emailAddress,
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 
   static Widget nameTextField(
@@ -300,6 +326,8 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
+        bool? filled,
+    Color? backgroundColour,
   }) =>
       _textField(
         textColour,
@@ -311,5 +339,7 @@ class FormWidgets {
         hintText: hintText,
         counterText: counterText,
         inputType: TextInputType.name,
+        filled: filled,
+        backgroundColour: backgroundColour,
       );
 }
