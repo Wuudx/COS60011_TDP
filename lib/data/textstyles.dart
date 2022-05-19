@@ -9,4 +9,13 @@ class CustomTextStyles {
         color: Color(textColour),
         fontSize: 25,
       );
+  static loginTitle(int textColour) => TextStyle(
+        color: Color(textColour),
+        fontSize: 40,
+      );
+
+  static popupText(int textColour) =>TextStyle(
+    color: Color(textColour),
+    fontSize: 30,
+  );
 }

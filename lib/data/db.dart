@@ -139,5 +139,16 @@ class DeviceDatabase extends _$DeviceDatabase {
   Future<List<Category>> getCategories(int? id) async =>
       (select(categories)..where((tbl) => tbl.parentId.equals(id))).get();
 
-  Future<void> addImage(PhotosCompanion image)=> into(photos).insert(image);
+  Future<void> addImage(PhotosCompanion image) => into(photos).insert(image);
+
+  Future<int> updateUserInfo(User user) async {
+    return transaction(() async {
+      await deleteAllUsers();
+      return await into(users).insert(user, mode: InsertMode.replace);
+    });
+  }
+
+  Future<void> deleteAllUsers() => delete(users).go();
+
+  Future<User?> getUser() => (select(users)..limit(1)).getSingleOrNull();
 }

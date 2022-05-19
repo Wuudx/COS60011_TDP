@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:http/http.dart' as http;
 
 import 'db.dart';
@@ -13,7 +14,105 @@ final user = User(
   points: 0,
 );
 
+const fakeValidOtp = true;
+const fakeUser = true;
+
 class Api {
+  Future<bool> userExist(String mobile) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.com/users?mobile=$mobile'),
+        headers: _getGetHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return false;
+  }
+
+  Future<void> requestOtp(String mobile, String? deviceId) async {
+    try {
+      await http.post(
+        Uri.parse('https://api.com/triger_otp'),
+        headers: _getPostHeader(),
+        body: jsonEncode(<String, dynamic>{
+          'mobile': mobile,
+          'deviceId': deviceId,
+          'Trigger_DateTime': DateTime.now().toString(),
+        }),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool> validateOtp(String mobile, String otp) async {
+    if (fakeValidOtp) {
+      return true;
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.com/otp?mobile=$mobile&otp=$otp'),
+        headers: _getGetHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return false;
+  }
+
+  Future<User?> getUser(String mobile) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.com/users?mobile=$mobile'),
+        headers: _getGetHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return User.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
+  Future<User?> submitUserInfo(UserRegistrationInfo userInfo) async {
+    if (fakeUser) {
+      return user;
+    }
+
+    try {
+      final response = await http
+          .post(Uri.parse('https://api.com/register_user'), headers: _getPostHeader(), body: {
+        'mobile': userInfo.mobile,
+        'firstName': userInfo.firstName,
+        'lastName': userInfo.lastName,
+        'deviceId': userInfo.deviceId,
+      });
+
+      if (response.statusCode == 201) {
+        return User.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
   Future<List<Category>?> getCategories() async {
     final response = await http.post(
       Uri.parse('https://api.com'),
