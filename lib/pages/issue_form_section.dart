@@ -451,9 +451,6 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ? Image.file(image)
                             : Image.network(_photosUrls[index - 1]),
                       ),
-                      onTap: () {
-                        Api().submitImage(image);
-                      },
                     ),
                     Positioned.fill(
                       child: Container(
