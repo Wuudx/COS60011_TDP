@@ -26,6 +26,9 @@ class Strings {
   static const popOtpNotValid = 'OTP is not valid.\n\nTry again.';
   static const txtNoItemsToShow = 'No items to show';
   static const txtNotImplemented = 'NOT CURRENTLY IMPLEMENTED';
+  static const txtStatusComplete = 'COMPLETED';
+  static const txtStatusInProgress = 'IN_PROGRESS';
+  static const txtStatusPending = 'PENDING';
   static const ttlSelectCategory = 'Select Category';
   static const ttlEnterOtp = 'Enter 4-Digit OTP';
   static const ttlWelcome = 'Welcome';

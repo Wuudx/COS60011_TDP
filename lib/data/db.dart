@@ -141,6 +141,9 @@ class DeviceDatabase extends _$DeviceDatabase {
 
   Future<void> addImage(PhotosCompanion image) => into(photos).insert(image);
 
+  Future<List<Photo>> getImagesOfIssue(int internalId) =>
+      (select(photos)..where((tbl) => tbl.internalIssueId.equals(internalId))).get();
+
   Future<int> updateUserInfo(User user) async {
     return transaction(() async {
       await deleteAllUsers();
