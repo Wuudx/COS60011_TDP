@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart';
 
 import 'db.dart';
 
@@ -169,7 +171,15 @@ class Api {
         Uri.parse('https://75kce59dya.execute-api.ap-southeast-2.amazonaws.com/uploads'),
       );
 
-      final imgBytes = image.readAsBytesSync();
+      final Uint8List imgBytes;
+
+      if (!image.path.endsWith('.jpg')) {
+        decodeImage(image.readAsBytesSync())!;
+        imgBytes = Uint8List.fromList(encodeJpg(decodeImage(image.readAsBytesSync())!));
+      } else {
+        imgBytes = image.readAsBytesSync();
+      }
+
       if (urlResponse.statusCode == 200) {
         final uploadUrlAndKey = jsonDecode(urlResponse.body);
         final imageUploadedResponse = await _client.put(
