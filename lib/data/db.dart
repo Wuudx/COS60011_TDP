@@ -9,53 +9,75 @@ import 'dart:io';
 part 'db.g.dart';
 
 class Users extends Table {
+  @JsonKey("user_id")
   IntColumn get id => integer()();
 
+  @JsonKey("device_id")
   TextColumn get deviceId => text()();
 
+  @JsonKey("first_name")
   TextColumn get firstName => text()();
 
+  @JsonKey("last_name")
   TextColumn get lastName => text()();
 
-  TextColumn get email => text().nullable()();
-
+  @JsonKey("mobile")
   TextColumn get mobile => text()();
 
+  @JsonKey("points")
   IntColumn get points => integer().withDefault(const Constant(0))();
 
+  @JsonKey("last_updated")
   DateTimeColumn get lastUpdate => dateTime().nullable()();
 }
 
 class Issues extends Table {
-  IntColumn get internalIssueId => integer()();
+  @JsonKey("Internal_Issue_ID")
+  IntColumn get internalIssueId => integer().nullable()();
 
-  @JsonKey("Server_Issue_ID")
+  @JsonKey("issue_id")
   IntColumn get serverIssueId => integer()();
 
-  @JsonKey("User_ID")
+  @JsonKey("user_id")
   IntColumn get userServerId => integer()();
 
+  @JsonKey("address")
   TextColumn get address => text().nullable()();
 
+  @JsonKey("lat")
   RealColumn get lat => real().nullable()();
 
+  @JsonKey("lon")
   RealColumn get long => real().nullable()();
 
+  @JsonKey("status")
   TextColumn get status => text().nullable()();
 
+  @JsonKey("vote")
   IntColumn get vote => integer().withDefault(const Constant(0))();
 
+  @JsonKey("description")
   TextColumn get description => text().nullable()();
 
+  @JsonKey("category_1")
   IntColumn get categoryLvl1 => integer().nullable()();
 
+  @JsonKey("category_2")
   IntColumn get categoryLvl2 => integer().nullable()();
 
+  @JsonKey("category_3")
   IntColumn get categoryLvl3 => integer().nullable()();
 
   TextColumn get images => text().nullable()();
 
+  @JsonKey("assigned_staff")
+  IntColumn get assignedStaff => integer().nullable()();
+
+  @JsonKey("notes")
   TextColumn get notes => text().nullable()();
+
+  @JsonKey("last_updated")
+  DateTimeColumn get lastUpdate => dateTime().nullable()();
 
   @override
   Set<Column>? get primaryKey => {serverIssueId};
@@ -83,13 +105,16 @@ class UserVotes extends Table {
 
 @DataClassName('Category')
 class Categories extends Table {
-  @JsonKey("Category_ID")
+  @JsonKey("id")
   IntColumn get id => integer()();
 
-  @JsonKey("Category_ID")
+  @JsonKey("description")
   TextColumn get description => text()();
 
-  @JsonKey("Category_ID")
+  @JsonKey("question")
+  TextColumn get questionText => text().nullable()();
+
+  @JsonKey("parent_id")
   IntColumn get parentId => integer().nullable()();
 }
 
@@ -117,14 +142,23 @@ class DeviceDatabase extends _$DeviceDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (Migrator m) {
           return m.createAll();
         },
-        onUpgrade: (Migrator m, int from, int to) async {},
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from <= 1) {
+            m.drop(users);
+            m.drop(issues);
+            m.drop(photos);
+            m.drop(categories);
+            m.drop(userVotes);
+            m.createAll();
+          }
+        },
       );
 
   Future<int> addIssue(IssuesCompanion issue) => into(issues).insertOnConflictUpdate(issue);

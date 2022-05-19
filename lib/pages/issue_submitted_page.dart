@@ -229,7 +229,7 @@ class _IssueSubmittedPageState extends State<IssueSubmittedPage> {
                     //#endregion
                     //#region Images
                     FutureBuilder(
-                      future: database.getImagesOfIssue(widget.issue.internalIssueId),
+                      future: database.getImagesOfIssue(widget.issue.internalIssueId!),
                       builder: (context, AsyncSnapshot<List<Photo>> snapshot) {
                         if (snapshot.hasData &&
                             snapshot.data != null &&

@@ -509,7 +509,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                   await database.addImage(
                     PhotosCompanion.insert(
                       data: image.path,
-                      internalIssueId: _submittedIssue.internalIssueId.value,
+                      internalIssueId: _submittedIssue.internalIssueId.value!,
                     ),
                   );
                 }
