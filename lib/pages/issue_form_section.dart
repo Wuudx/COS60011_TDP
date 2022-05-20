@@ -65,9 +65,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   }
 
   _descriptionListener() {
-    _issue = _issue.copyWith(
-      description: drift.Value(description.text),
-    );
+    setState(() {
+      _issue = _issue.copyWith(
+        description: drift.Value(description.text),
+      );
+    });
   }
 
   _buildAddPhoto() {
@@ -178,7 +180,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   }
 
   bool _canSubmit() =>
-      _issue.description.value != null &&
+      (_issue.description.value != null && _issue.description.value != '') &&
       (!cat1Required || cat1Required && _issue.categoryLvl1.value != null) &&
       (!cat2Required || cat2Required && _issue.categoryLvl2.value != null) &&
       (!cat3Required || cat3Required && _issue.categoryLvl3.value != null);
