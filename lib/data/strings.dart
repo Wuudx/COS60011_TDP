@@ -12,9 +12,9 @@ class Strings {
   static const hntMobile = 'Mobile';
   static const hntSearch = 'Search...';
   static const hntSelect = 'Select';
-  static const lblCategoryLvl1 = 'Category Lvl1';
-  static const lblCategoryLvl2 = 'Category Lvl2';
-  static const lblCategoryLvl3 = 'Category Lvl3';
+  static const lblCategoryLvl1 = 'What does the issue relate to?';
+  static const lblCategoryLvl2 = 'Related to?';
+  static const lblCategoryLvl3 = 'What\'s needed?';
   static const lblDescription = 'Description';
   static const lblImages = 'Images';
   static const lblLocation = 'Location';
