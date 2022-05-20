@@ -66,7 +66,19 @@ class _IssueSubmittedPageState extends State<IssueSubmittedPage> {
             vertical: 10,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              FormWidgets.iconButtonIB(
+                Icons.close,
+                50,
+                Colors.white,
+                Colors.black,
+                onClick: () {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
               SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
