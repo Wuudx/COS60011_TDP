@@ -41,7 +41,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   final List<String> _photosUrls = [];
   final List<PhotoSource> _photosSources = [];
   final List<GalleryItem> _galleryItems = [];
-  bool submitPressed = false;
+  bool submitPressed = false, cat1Required = true, cat2Required = false, cat3Required = false;
 
   @override
   void initState() {
@@ -177,6 +177,12 @@ class _IssueFormSectionState extends State<IssueFormSection> {
     );
   }
 
+  bool _canSubmit() =>
+      _issue.description.value != null &&
+      (!cat1Required || cat1Required && _issue.categoryLvl1.value != null) &&
+      (!cat2Required || cat2Required && _issue.categoryLvl2.value != null) &&
+      (!cat3Required || cat3Required && _issue.categoryLvl3.value != null);
+
   @override
   Widget build(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -186,6 +192,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
             future: database.getCategories(null),
             builder: (context, AsyncSnapshot<List<Category>> snapshot) {
               if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                cat2Required = true;
                 return Column(
                   children: [
                     GestureDetector(
@@ -242,6 +249,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                   ],
                 );
               } else {
+                cat1Required = false;
                 return Container();
               }
             },
@@ -253,6 +261,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               future: database.getCategories(_issue.categoryLvl1.value),
               builder: (context, AsyncSnapshot<List<Category>> snapshot) {
                 if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                  cat3Required = true;
                   return Column(
                     children: [
                       GestureDetector(
@@ -309,6 +318,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                     ],
                   );
                 } else {
+                  cat2Required = false;
                   return Container();
                 }
               },
@@ -376,6 +386,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                     ],
                   );
                 } else {
+                  cat3Required = false;
                   return Container();
                 }
               },
@@ -478,44 +489,45 @@ class _IssueFormSectionState extends State<IssueFormSection> {
           ),
           //#endregion
           //#region Submit Button
-          FormWidgets.textButtonTB(
-            Strings.btnSubmit,
-            Colors.white,
-            Colors.green,
-            onClick: () async {
-              if (submitPressed) {
-                return;
-              }
-              setState(() {
-                submitPressed = true;
-              });
-              List<String> imgKeys = [];
-              for (File image in _photos) {
-                final imgKey = await Api().submitImage(image);
-                if (imgKey != null) {
-                  imgKeys.add(imgKey);
+          if (_canSubmit())
+            FormWidgets.textButtonTB(
+              Strings.btnSubmit,
+              Colors.white,
+              Colors.green,
+              onClick: () async {
+                if (submitPressed) {
+                  return;
                 }
-              }
-              final _submittedIssue = await Api().submitIssue(
-                _issue.copyWith(
-                  images: drift.Value(imgKeys.join(',')),
-                ),
-              );
-
-              if (_submittedIssue != null) {
-                await database.addIssue(_submittedIssue);
-
+                setState(() {
+                  submitPressed = true;
+                });
+                List<String> imgKeys = [];
                 for (File image in _photos) {
-                  await database.addImage(
-                    PhotosCompanion.insert(
-                      data: image.path,
-                      internalIssueId: _submittedIssue.internalIssueId.value!,
-                    ),
-                  );
+                  final imgKey = await Api().submitImage(image);
+                  if (imgKey != null) {
+                    imgKeys.add(imgKey);
+                  }
                 }
-              }
-            },
-          ),
+                final _submittedIssue = await Api().submitIssue(
+                  _issue.copyWith(
+                    images: drift.Value(imgKeys.join(',')),
+                  ),
+                );
+
+                if (_submittedIssue != null) {
+                  await database.addIssue(_submittedIssue);
+
+                  for (File image in _photos) {
+                    await database.addImage(
+                      PhotosCompanion.insert(
+                        data: image.path,
+                        internalIssueId: _submittedIssue.internalIssueId.value!,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
           //#endregion
           //#region Cancel Button
           FormWidgets.textButtonTB(
