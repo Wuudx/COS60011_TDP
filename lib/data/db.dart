@@ -61,12 +61,17 @@ class Issues extends Table {
 
   @JsonKey("category_1")
   IntColumn get categoryLvl1 => integer().nullable()();
+  TextColumn get categoryLvl1Description => text().nullable()();
 
   @JsonKey("category_2")
   IntColumn get categoryLvl2 => integer().nullable()();
+  TextColumn get categoryLvl2Description => text().nullable()();
+  TextColumn get categoryLvl2QuestionLabel => text().nullable()();
 
   @JsonKey("category_3")
   IntColumn get categoryLvl3 => integer().nullable()();
+  TextColumn get categoryLvl3Description => text().nullable()();
+  TextColumn get categoryLvl3QuestionLabel => text().nullable()();
 
   TextColumn get images => text().nullable()();
 
@@ -142,7 +147,7 @@ class DeviceDatabase extends _$DeviceDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

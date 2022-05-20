@@ -205,10 +205,17 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                           ),
                         )
                             .then((value) {
-                          if (value != null) {
+                          if (value != null && value.id != _issue.categoryLvl1.value) {
                             setState(() {
                               _issue = _issue.copyWith(
                                 categoryLvl1: drift.Value(value!.id),
+                                categoryLvl1Description: drift.Value(value!.description),
+                                categoryLvl2QuestionLabel: drift.Value(value!.questionText),
+                                categoryLvl2: const drift.Value(null),
+                                categoryLvl2Description: const drift.Value(null),
+                                categoryLvl3QuestionLabel: const drift.Value(null),
+                                categoryLvl3: const drift.Value(null),
+                                categoryLvl3Description: const drift.Value(null),
                               );
                             });
                           }
@@ -228,7 +235,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    '${_issue.categoryLvl1.value ?? Strings.hntSelect}',
+                                    _issue.categoryLvl1Description.value ?? Strings.hntSelect,
                                     style: CustomTextStyles.formTextField(
                                       Colors.black.value,
                                     ),
@@ -274,10 +281,14 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ),
                           )
                               .then((value) {
-                            if (value != null) {
+                            if (value != null && value.id != _issue.categoryLvl2.value) {
                               setState(() {
                                 _issue = _issue.copyWith(
                                   categoryLvl2: drift.Value(value!.id),
+                                  categoryLvl2Description: drift.Value(value!.description),
+                                  categoryLvl3QuestionLabel: drift.Value(value!.questionText),
+                                  categoryLvl3: const drift.Value(null),
+                                  categoryLvl3Description: const drift.Value(null),
                                 );
                               });
                             }
@@ -289,7 +300,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Strings.lblCategoryLvl2,
+                                _issue.categoryLvl2QuestionLabel.value ?? Strings.lblCategoryLvl2,
                                 style: CustomTextStyles.formTextField(Colors.black.value),
                               ),
                               Row(
@@ -297,7 +308,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      '${_issue.categoryLvl2.value ?? Strings.hntSelect}',
+                                      _issue.categoryLvl2Description.value ?? Strings.hntSelect,
                                       style: CustomTextStyles.formTextField(
                                         Colors.black.value,
                                       ),
@@ -342,10 +353,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ),
                           )
                               .then((value) {
-                            if (value != null) {
+                            if (value != null && value.id != _issue.categoryLvl3.value) {
                               setState(() {
                                 _issue = _issue.copyWith(
                                   categoryLvl3: drift.Value(value!.id),
+                                  categoryLvl3Description: drift.Value(value!.description),
                                 );
                               });
                             }
@@ -357,7 +369,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Strings.lblCategoryLvl3,
+                                _issue.categoryLvl3QuestionLabel.value ?? Strings.lblCategoryLvl3,
                                 style: CustomTextStyles.formTextField(Colors.black.value),
                               ),
                               Row(
@@ -365,7 +377,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      '${_issue.categoryLvl3.value ?? Strings.hntSelect}',
+                                      _issue.categoryLvl3Description.value ?? Strings.hntSelect,
                                       style: CustomTextStyles.formTextField(
                                         Colors.black.value,
                                       ),
