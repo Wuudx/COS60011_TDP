@@ -133,18 +133,44 @@ class Api {
   }
 
   Future<List<Category>?> getCategories() async {
-    final response = await http.post(
-      Uri.parse('https://api.com'),
-      headers: _getGetHeader(),
-    );
-
-    if (response.statusCode == 200) {
-      return _parseToList(
-        response.body,
-        (Map<String, dynamic> jsonMapObj) => Category.fromJson(
-          jsonMapObj,
-        ),
+    try {
+      final response = await http.get(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/category'),
+        headers: _getGetHeader(),
       );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Category.fromJson(
+            jsonMapObj,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
+  Future<List<Issue>?> getIssues() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'),
+        headers: _getPostHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Issue.fromJson(
+            jsonMapObj,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
     }
 
     return null;
