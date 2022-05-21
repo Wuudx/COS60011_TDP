@@ -49,7 +49,11 @@ class _LoginPageState extends State<LoginPage> {
               Colors.black,
               Colors.white,
               onClick: () {
-                //TODO: Navigate to main page.
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  PageName.map,
+                  (route) => false,
+                  arguments: BaseArguments(user: widget.user),
+                );
               },
             ),
           //#endregion
