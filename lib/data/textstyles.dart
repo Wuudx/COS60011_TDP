@@ -14,8 +14,23 @@ class CustomTextStyles {
         fontSize: 40,
       );
 
-  static popupText(int textColour) =>TextStyle(
-    color: Color(textColour),
-    fontSize: 30,
-  );
+  static popupText(int textColour) => TextStyle(
+        color: Color(textColour),
+        fontSize: 30,
+      );
+
+  static labelText(int textColour) => TextStyle(
+        color: Color(textColour),
+        fontSize: 20,
+      );
+
+  static mainText(int textColour) => TextStyle(
+        color: Color(textColour),
+        fontSize: 20,
+      );
+
+  static statusTitle(int textColour) => TextStyle(
+        color: Color(textColour),
+        fontSize: 40,
+      );
 }

@@ -12,7 +12,6 @@ class User extends DataClass implements Insertable<User> {
   final String deviceId;
   final String firstName;
   final String lastName;
-  final String? email;
   final String mobile;
   final int points;
   final DateTime? lastUpdate;
@@ -21,7 +20,6 @@ class User extends DataClass implements Insertable<User> {
       required this.deviceId,
       required this.firstName,
       required this.lastName,
-      this.email,
       required this.mobile,
       required this.points,
       this.lastUpdate});
@@ -36,8 +34,6 @@ class User extends DataClass implements Insertable<User> {
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name'])!,
       lastName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_name'])!,
-      email: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}email']),
       mobile: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}mobile'])!,
       points: const IntType()
@@ -53,9 +49,6 @@ class User extends DataClass implements Insertable<User> {
     map['device_id'] = Variable<String>(deviceId);
     map['first_name'] = Variable<String>(firstName);
     map['last_name'] = Variable<String>(lastName);
-    if (!nullToAbsent || email != null) {
-      map['email'] = Variable<String?>(email);
-    }
     map['mobile'] = Variable<String>(mobile);
     map['points'] = Variable<int>(points);
     if (!nullToAbsent || lastUpdate != null) {
@@ -70,8 +63,6 @@ class User extends DataClass implements Insertable<User> {
       deviceId: Value(deviceId),
       firstName: Value(firstName),
       lastName: Value(lastName),
-      email:
-          email == null && nullToAbsent ? const Value.absent() : Value(email),
       mobile: Value(mobile),
       points: Value(points),
       lastUpdate: lastUpdate == null && nullToAbsent
@@ -84,28 +75,26 @@ class User extends DataClass implements Insertable<User> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return User(
-      id: serializer.fromJson<int>(json['id']),
-      deviceId: serializer.fromJson<String>(json['deviceId']),
-      firstName: serializer.fromJson<String>(json['firstName']),
-      lastName: serializer.fromJson<String>(json['lastName']),
-      email: serializer.fromJson<String?>(json['email']),
+      id: serializer.fromJson<int>(json['user_id']),
+      deviceId: serializer.fromJson<String>(json['device_id']),
+      firstName: serializer.fromJson<String>(json['first_name']),
+      lastName: serializer.fromJson<String>(json['last_name']),
       mobile: serializer.fromJson<String>(json['mobile']),
       points: serializer.fromJson<int>(json['points']),
-      lastUpdate: serializer.fromJson<DateTime?>(json['lastUpdate']),
+      lastUpdate: serializer.fromJson<DateTime?>(json['last_updated']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'deviceId': serializer.toJson<String>(deviceId),
-      'firstName': serializer.toJson<String>(firstName),
-      'lastName': serializer.toJson<String>(lastName),
-      'email': serializer.toJson<String?>(email),
+      'user_id': serializer.toJson<int>(id),
+      'device_id': serializer.toJson<String>(deviceId),
+      'first_name': serializer.toJson<String>(firstName),
+      'last_name': serializer.toJson<String>(lastName),
       'mobile': serializer.toJson<String>(mobile),
       'points': serializer.toJson<int>(points),
-      'lastUpdate': serializer.toJson<DateTime?>(lastUpdate),
+      'last_updated': serializer.toJson<DateTime?>(lastUpdate),
     };
   }
 
@@ -114,7 +103,6 @@ class User extends DataClass implements Insertable<User> {
           String? deviceId,
           String? firstName,
           String? lastName,
-          String? email,
           String? mobile,
           int? points,
           DateTime? lastUpdate}) =>
@@ -123,7 +111,6 @@ class User extends DataClass implements Insertable<User> {
         deviceId: deviceId ?? this.deviceId,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
-        email: email ?? this.email,
         mobile: mobile ?? this.mobile,
         points: points ?? this.points,
         lastUpdate: lastUpdate ?? this.lastUpdate,
@@ -135,7 +122,6 @@ class User extends DataClass implements Insertable<User> {
           ..write('deviceId: $deviceId, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
-          ..write('email: $email, ')
           ..write('mobile: $mobile, ')
           ..write('points: $points, ')
           ..write('lastUpdate: $lastUpdate')
@@ -145,7 +131,7 @@ class User extends DataClass implements Insertable<User> {
 
   @override
   int get hashCode => Object.hash(
-      id, deviceId, firstName, lastName, email, mobile, points, lastUpdate);
+      id, deviceId, firstName, lastName, mobile, points, lastUpdate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -154,7 +140,6 @@ class User extends DataClass implements Insertable<User> {
           other.deviceId == this.deviceId &&
           other.firstName == this.firstName &&
           other.lastName == this.lastName &&
-          other.email == this.email &&
           other.mobile == this.mobile &&
           other.points == this.points &&
           other.lastUpdate == this.lastUpdate);
@@ -165,7 +150,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> deviceId;
   final Value<String> firstName;
   final Value<String> lastName;
-  final Value<String?> email;
   final Value<String> mobile;
   final Value<int> points;
   final Value<DateTime?> lastUpdate;
@@ -174,7 +158,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.deviceId = const Value.absent(),
     this.firstName = const Value.absent(),
     this.lastName = const Value.absent(),
-    this.email = const Value.absent(),
     this.mobile = const Value.absent(),
     this.points = const Value.absent(),
     this.lastUpdate = const Value.absent(),
@@ -184,7 +167,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     required String deviceId,
     required String firstName,
     required String lastName,
-    this.email = const Value.absent(),
     required String mobile,
     this.points = const Value.absent(),
     this.lastUpdate = const Value.absent(),
@@ -198,7 +180,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     Expression<String>? deviceId,
     Expression<String>? firstName,
     Expression<String>? lastName,
-    Expression<String?>? email,
     Expression<String>? mobile,
     Expression<int>? points,
     Expression<DateTime?>? lastUpdate,
@@ -208,7 +189,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (deviceId != null) 'device_id': deviceId,
       if (firstName != null) 'first_name': firstName,
       if (lastName != null) 'last_name': lastName,
-      if (email != null) 'email': email,
       if (mobile != null) 'mobile': mobile,
       if (points != null) 'points': points,
       if (lastUpdate != null) 'last_update': lastUpdate,
@@ -220,7 +200,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<String>? deviceId,
       Value<String>? firstName,
       Value<String>? lastName,
-      Value<String?>? email,
       Value<String>? mobile,
       Value<int>? points,
       Value<DateTime?>? lastUpdate}) {
@@ -229,7 +208,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       deviceId: deviceId ?? this.deviceId,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      email: email ?? this.email,
       mobile: mobile ?? this.mobile,
       points: points ?? this.points,
       lastUpdate: lastUpdate ?? this.lastUpdate,
@@ -251,9 +229,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     if (lastName.present) {
       map['last_name'] = Variable<String>(lastName.value);
     }
-    if (email.present) {
-      map['email'] = Variable<String?>(email.value);
-    }
     if (mobile.present) {
       map['mobile'] = Variable<String>(mobile.value);
     }
@@ -273,7 +248,6 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('deviceId: $deviceId, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
-          ..write('email: $email, ')
           ..write('mobile: $mobile, ')
           ..write('points: $points, ')
           ..write('lastUpdate: $lastUpdate')
@@ -307,11 +281,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   late final GeneratedColumn<String?> lastName = GeneratedColumn<String?>(
       'last_name', aliasedName, false,
       type: const StringType(), requiredDuringInsert: true);
-  final VerificationMeta _emailMeta = const VerificationMeta('email');
-  @override
-  late final GeneratedColumn<String?> email = GeneratedColumn<String?>(
-      'email', aliasedName, true,
-      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _mobileMeta = const VerificationMeta('mobile');
   @override
   late final GeneratedColumn<String?> mobile = GeneratedColumn<String?>(
@@ -331,7 +300,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       type: const IntType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, deviceId, firstName, lastName, email, mobile, points, lastUpdate];
+      [id, deviceId, firstName, lastName, mobile, points, lastUpdate];
   @override
   String get aliasedName => _alias ?? 'users';
   @override
@@ -363,10 +332,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta));
     } else if (isInserting) {
       context.missing(_lastNameMeta);
-    }
-    if (data.containsKey('email')) {
-      context.handle(
-          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
     }
     if (data.containsKey('mobile')) {
       context.handle(_mobileMeta,
@@ -402,7 +367,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 }
 
 class Issue extends DataClass implements Insertable<Issue> {
-  final int internalIssueId;
+  final int? internalIssueId;
   final int serverIssueId;
   final int userServerId;
   final String? address;
@@ -412,12 +377,19 @@ class Issue extends DataClass implements Insertable<Issue> {
   final int vote;
   final String? description;
   final int? categoryLvl1;
+  final String? categoryLvl1Description;
   final int? categoryLvl2;
+  final String? categoryLvl2Description;
+  final String? categoryLvl2QuestionLabel;
   final int? categoryLvl3;
+  final String? categoryLvl3Description;
+  final String? categoryLvl3QuestionLabel;
   final String? images;
+  final int? assignedStaff;
   final String? notes;
+  final DateTime? lastUpdate;
   Issue(
-      {required this.internalIssueId,
+      {this.internalIssueId,
       required this.serverIssueId,
       required this.userServerId,
       this.address,
@@ -427,15 +399,22 @@ class Issue extends DataClass implements Insertable<Issue> {
       required this.vote,
       this.description,
       this.categoryLvl1,
+      this.categoryLvl1Description,
       this.categoryLvl2,
+      this.categoryLvl2Description,
+      this.categoryLvl2QuestionLabel,
       this.categoryLvl3,
+      this.categoryLvl3Description,
+      this.categoryLvl3QuestionLabel,
       this.images,
-      this.notes});
+      this.assignedStaff,
+      this.notes,
+      this.lastUpdate});
   factory Issue.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Issue(
-      internalIssueId: const IntType().mapFromDatabaseResponse(
-          data['${effectivePrefix}internal_issue_id'])!,
+      internalIssueId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}internal_issue_id']),
       serverIssueId: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}server_issue_id'])!,
       userServerId: const IntType()
@@ -454,20 +433,36 @@ class Issue extends DataClass implements Insertable<Issue> {
           .mapFromDatabaseResponse(data['${effectivePrefix}description']),
       categoryLvl1: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}category_lvl1']),
+      categoryLvl1Description: const StringType().mapFromDatabaseResponse(
+          data['${effectivePrefix}category_lvl1_description']),
       categoryLvl2: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}category_lvl2']),
+      categoryLvl2Description: const StringType().mapFromDatabaseResponse(
+          data['${effectivePrefix}category_lvl2_description']),
+      categoryLvl2QuestionLabel: const StringType().mapFromDatabaseResponse(
+          data['${effectivePrefix}category_lvl2_question_label']),
       categoryLvl3: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}category_lvl3']),
+      categoryLvl3Description: const StringType().mapFromDatabaseResponse(
+          data['${effectivePrefix}category_lvl3_description']),
+      categoryLvl3QuestionLabel: const StringType().mapFromDatabaseResponse(
+          data['${effectivePrefix}category_lvl3_question_label']),
       images: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}images']),
+      assignedStaff: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}assigned_staff']),
       notes: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}notes']),
+      lastUpdate: const DateTimeType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_update']),
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['internal_issue_id'] = Variable<int>(internalIssueId);
+    if (!nullToAbsent || internalIssueId != null) {
+      map['internal_issue_id'] = Variable<int?>(internalIssueId);
+    }
     map['server_issue_id'] = Variable<int>(serverIssueId);
     map['user_server_id'] = Variable<int>(userServerId);
     if (!nullToAbsent || address != null) {
@@ -489,24 +484,52 @@ class Issue extends DataClass implements Insertable<Issue> {
     if (!nullToAbsent || categoryLvl1 != null) {
       map['category_lvl1'] = Variable<int?>(categoryLvl1);
     }
+    if (!nullToAbsent || categoryLvl1Description != null) {
+      map['category_lvl1_description'] =
+          Variable<String?>(categoryLvl1Description);
+    }
     if (!nullToAbsent || categoryLvl2 != null) {
       map['category_lvl2'] = Variable<int?>(categoryLvl2);
+    }
+    if (!nullToAbsent || categoryLvl2Description != null) {
+      map['category_lvl2_description'] =
+          Variable<String?>(categoryLvl2Description);
+    }
+    if (!nullToAbsent || categoryLvl2QuestionLabel != null) {
+      map['category_lvl2_question_label'] =
+          Variable<String?>(categoryLvl2QuestionLabel);
     }
     if (!nullToAbsent || categoryLvl3 != null) {
       map['category_lvl3'] = Variable<int?>(categoryLvl3);
     }
+    if (!nullToAbsent || categoryLvl3Description != null) {
+      map['category_lvl3_description'] =
+          Variable<String?>(categoryLvl3Description);
+    }
+    if (!nullToAbsent || categoryLvl3QuestionLabel != null) {
+      map['category_lvl3_question_label'] =
+          Variable<String?>(categoryLvl3QuestionLabel);
+    }
     if (!nullToAbsent || images != null) {
       map['images'] = Variable<String?>(images);
     }
+    if (!nullToAbsent || assignedStaff != null) {
+      map['assigned_staff'] = Variable<int?>(assignedStaff);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String?>(notes);
+    }
+    if (!nullToAbsent || lastUpdate != null) {
+      map['last_update'] = Variable<DateTime?>(lastUpdate);
     }
     return map;
   }
 
   IssuesCompanion toCompanion(bool nullToAbsent) {
     return IssuesCompanion(
-      internalIssueId: Value(internalIssueId),
+      internalIssueId: internalIssueId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(internalIssueId),
       serverIssueId: Value(serverIssueId),
       userServerId: Value(userServerId),
       address: address == null && nullToAbsent
@@ -523,16 +546,39 @@ class Issue extends DataClass implements Insertable<Issue> {
       categoryLvl1: categoryLvl1 == null && nullToAbsent
           ? const Value.absent()
           : Value(categoryLvl1),
+      categoryLvl1Description: categoryLvl1Description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryLvl1Description),
       categoryLvl2: categoryLvl2 == null && nullToAbsent
           ? const Value.absent()
           : Value(categoryLvl2),
+      categoryLvl2Description: categoryLvl2Description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryLvl2Description),
+      categoryLvl2QuestionLabel:
+          categoryLvl2QuestionLabel == null && nullToAbsent
+              ? const Value.absent()
+              : Value(categoryLvl2QuestionLabel),
       categoryLvl3: categoryLvl3 == null && nullToAbsent
           ? const Value.absent()
           : Value(categoryLvl3),
+      categoryLvl3Description: categoryLvl3Description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryLvl3Description),
+      categoryLvl3QuestionLabel:
+          categoryLvl3QuestionLabel == null && nullToAbsent
+              ? const Value.absent()
+              : Value(categoryLvl3QuestionLabel),
       images:
           images == null && nullToAbsent ? const Value.absent() : Value(images),
+      assignedStaff: assignedStaff == null && nullToAbsent
+          ? const Value.absent()
+          : Value(assignedStaff),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      lastUpdate: lastUpdate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUpdate),
     );
   }
 
@@ -540,40 +586,64 @@ class Issue extends DataClass implements Insertable<Issue> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Issue(
-      internalIssueId: serializer.fromJson<int>(json['internalIssueId']),
-      serverIssueId: serializer.fromJson<int>(json['Server_Issue_ID']),
-      userServerId: serializer.fromJson<int>(json['User_ID']),
+      internalIssueId: serializer.fromJson<int?>(json['Internal_Issue_ID']),
+      serverIssueId: serializer.fromJson<int>(json['issue_id']),
+      userServerId: serializer.fromJson<int>(json['user_id']),
       address: serializer.fromJson<String?>(json['address']),
       lat: serializer.fromJson<double?>(json['lat']),
-      long: serializer.fromJson<double?>(json['long']),
+      long: serializer.fromJson<double?>(json['lon']),
       status: serializer.fromJson<String?>(json['status']),
       vote: serializer.fromJson<int>(json['vote']),
       description: serializer.fromJson<String?>(json['description']),
-      categoryLvl1: serializer.fromJson<int?>(json['categoryLvl1']),
-      categoryLvl2: serializer.fromJson<int?>(json['categoryLvl2']),
-      categoryLvl3: serializer.fromJson<int?>(json['categoryLvl3']),
+      categoryLvl1: serializer.fromJson<int?>(json['category_1']),
+      categoryLvl1Description:
+          serializer.fromJson<String?>(json['categoryLvl1Description']),
+      categoryLvl2: serializer.fromJson<int?>(json['category_2']),
+      categoryLvl2Description:
+          serializer.fromJson<String?>(json['categoryLvl2Description']),
+      categoryLvl2QuestionLabel:
+          serializer.fromJson<String?>(json['categoryLvl2QuestionLabel']),
+      categoryLvl3: serializer.fromJson<int?>(json['category_3']),
+      categoryLvl3Description:
+          serializer.fromJson<String?>(json['categoryLvl3Description']),
+      categoryLvl3QuestionLabel:
+          serializer.fromJson<String?>(json['categoryLvl3QuestionLabel']),
       images: serializer.fromJson<String?>(json['images']),
+      assignedStaff: serializer.fromJson<int?>(json['assigned_staff']),
       notes: serializer.fromJson<String?>(json['notes']),
+      lastUpdate: serializer.fromJson<DateTime?>(json['last_updated']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'internalIssueId': serializer.toJson<int>(internalIssueId),
-      'Server_Issue_ID': serializer.toJson<int>(serverIssueId),
-      'User_ID': serializer.toJson<int>(userServerId),
+      'Internal_Issue_ID': serializer.toJson<int?>(internalIssueId),
+      'issue_id': serializer.toJson<int>(serverIssueId),
+      'user_id': serializer.toJson<int>(userServerId),
       'address': serializer.toJson<String?>(address),
       'lat': serializer.toJson<double?>(lat),
-      'long': serializer.toJson<double?>(long),
+      'lon': serializer.toJson<double?>(long),
       'status': serializer.toJson<String?>(status),
       'vote': serializer.toJson<int>(vote),
       'description': serializer.toJson<String?>(description),
-      'categoryLvl1': serializer.toJson<int?>(categoryLvl1),
-      'categoryLvl2': serializer.toJson<int?>(categoryLvl2),
-      'categoryLvl3': serializer.toJson<int?>(categoryLvl3),
+      'category_1': serializer.toJson<int?>(categoryLvl1),
+      'categoryLvl1Description':
+          serializer.toJson<String?>(categoryLvl1Description),
+      'category_2': serializer.toJson<int?>(categoryLvl2),
+      'categoryLvl2Description':
+          serializer.toJson<String?>(categoryLvl2Description),
+      'categoryLvl2QuestionLabel':
+          serializer.toJson<String?>(categoryLvl2QuestionLabel),
+      'category_3': serializer.toJson<int?>(categoryLvl3),
+      'categoryLvl3Description':
+          serializer.toJson<String?>(categoryLvl3Description),
+      'categoryLvl3QuestionLabel':
+          serializer.toJson<String?>(categoryLvl3QuestionLabel),
       'images': serializer.toJson<String?>(images),
+      'assigned_staff': serializer.toJson<int?>(assignedStaff),
       'notes': serializer.toJson<String?>(notes),
+      'last_updated': serializer.toJson<DateTime?>(lastUpdate),
     };
   }
 
@@ -588,10 +658,17 @@ class Issue extends DataClass implements Insertable<Issue> {
           int? vote,
           String? description,
           int? categoryLvl1,
+          String? categoryLvl1Description,
           int? categoryLvl2,
+          String? categoryLvl2Description,
+          String? categoryLvl2QuestionLabel,
           int? categoryLvl3,
+          String? categoryLvl3Description,
+          String? categoryLvl3QuestionLabel,
           String? images,
-          String? notes}) =>
+          int? assignedStaff,
+          String? notes,
+          DateTime? lastUpdate}) =>
       Issue(
         internalIssueId: internalIssueId ?? this.internalIssueId,
         serverIssueId: serverIssueId ?? this.serverIssueId,
@@ -603,10 +680,22 @@ class Issue extends DataClass implements Insertable<Issue> {
         vote: vote ?? this.vote,
         description: description ?? this.description,
         categoryLvl1: categoryLvl1 ?? this.categoryLvl1,
+        categoryLvl1Description:
+            categoryLvl1Description ?? this.categoryLvl1Description,
         categoryLvl2: categoryLvl2 ?? this.categoryLvl2,
+        categoryLvl2Description:
+            categoryLvl2Description ?? this.categoryLvl2Description,
+        categoryLvl2QuestionLabel:
+            categoryLvl2QuestionLabel ?? this.categoryLvl2QuestionLabel,
         categoryLvl3: categoryLvl3 ?? this.categoryLvl3,
+        categoryLvl3Description:
+            categoryLvl3Description ?? this.categoryLvl3Description,
+        categoryLvl3QuestionLabel:
+            categoryLvl3QuestionLabel ?? this.categoryLvl3QuestionLabel,
         images: images ?? this.images,
+        assignedStaff: assignedStaff ?? this.assignedStaff,
         notes: notes ?? this.notes,
+        lastUpdate: lastUpdate ?? this.lastUpdate,
       );
   @override
   String toString() {
@@ -621,30 +710,45 @@ class Issue extends DataClass implements Insertable<Issue> {
           ..write('vote: $vote, ')
           ..write('description: $description, ')
           ..write('categoryLvl1: $categoryLvl1, ')
+          ..write('categoryLvl1Description: $categoryLvl1Description, ')
           ..write('categoryLvl2: $categoryLvl2, ')
+          ..write('categoryLvl2Description: $categoryLvl2Description, ')
+          ..write('categoryLvl2QuestionLabel: $categoryLvl2QuestionLabel, ')
           ..write('categoryLvl3: $categoryLvl3, ')
+          ..write('categoryLvl3Description: $categoryLvl3Description, ')
+          ..write('categoryLvl3QuestionLabel: $categoryLvl3QuestionLabel, ')
           ..write('images: $images, ')
-          ..write('notes: $notes')
+          ..write('assignedStaff: $assignedStaff, ')
+          ..write('notes: $notes, ')
+          ..write('lastUpdate: $lastUpdate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      internalIssueId,
-      serverIssueId,
-      userServerId,
-      address,
-      lat,
-      long,
-      status,
-      vote,
-      description,
-      categoryLvl1,
-      categoryLvl2,
-      categoryLvl3,
-      images,
-      notes);
+  int get hashCode => Object.hashAll([
+        internalIssueId,
+        serverIssueId,
+        userServerId,
+        address,
+        lat,
+        long,
+        status,
+        vote,
+        description,
+        categoryLvl1,
+        categoryLvl1Description,
+        categoryLvl2,
+        categoryLvl2Description,
+        categoryLvl2QuestionLabel,
+        categoryLvl3,
+        categoryLvl3Description,
+        categoryLvl3QuestionLabel,
+        images,
+        assignedStaff,
+        notes,
+        lastUpdate
+      ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -659,14 +763,21 @@ class Issue extends DataClass implements Insertable<Issue> {
           other.vote == this.vote &&
           other.description == this.description &&
           other.categoryLvl1 == this.categoryLvl1 &&
+          other.categoryLvl1Description == this.categoryLvl1Description &&
           other.categoryLvl2 == this.categoryLvl2 &&
+          other.categoryLvl2Description == this.categoryLvl2Description &&
+          other.categoryLvl2QuestionLabel == this.categoryLvl2QuestionLabel &&
           other.categoryLvl3 == this.categoryLvl3 &&
+          other.categoryLvl3Description == this.categoryLvl3Description &&
+          other.categoryLvl3QuestionLabel == this.categoryLvl3QuestionLabel &&
           other.images == this.images &&
-          other.notes == this.notes);
+          other.assignedStaff == this.assignedStaff &&
+          other.notes == this.notes &&
+          other.lastUpdate == this.lastUpdate);
 }
 
 class IssuesCompanion extends UpdateCompanion<Issue> {
-  final Value<int> internalIssueId;
+  final Value<int?> internalIssueId;
   final Value<int> serverIssueId;
   final Value<int> userServerId;
   final Value<String?> address;
@@ -676,10 +787,17 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
   final Value<int> vote;
   final Value<String?> description;
   final Value<int?> categoryLvl1;
+  final Value<String?> categoryLvl1Description;
   final Value<int?> categoryLvl2;
+  final Value<String?> categoryLvl2Description;
+  final Value<String?> categoryLvl2QuestionLabel;
   final Value<int?> categoryLvl3;
+  final Value<String?> categoryLvl3Description;
+  final Value<String?> categoryLvl3QuestionLabel;
   final Value<String?> images;
+  final Value<int?> assignedStaff;
   final Value<String?> notes;
+  final Value<DateTime?> lastUpdate;
   const IssuesCompanion({
     this.internalIssueId = const Value.absent(),
     this.serverIssueId = const Value.absent(),
@@ -691,13 +809,20 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     this.vote = const Value.absent(),
     this.description = const Value.absent(),
     this.categoryLvl1 = const Value.absent(),
+    this.categoryLvl1Description = const Value.absent(),
     this.categoryLvl2 = const Value.absent(),
+    this.categoryLvl2Description = const Value.absent(),
+    this.categoryLvl2QuestionLabel = const Value.absent(),
     this.categoryLvl3 = const Value.absent(),
+    this.categoryLvl3Description = const Value.absent(),
+    this.categoryLvl3QuestionLabel = const Value.absent(),
     this.images = const Value.absent(),
+    this.assignedStaff = const Value.absent(),
     this.notes = const Value.absent(),
+    this.lastUpdate = const Value.absent(),
   });
   IssuesCompanion.insert({
-    required int internalIssueId,
+    this.internalIssueId = const Value.absent(),
     this.serverIssueId = const Value.absent(),
     required int userServerId,
     this.address = const Value.absent(),
@@ -707,14 +832,20 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     this.vote = const Value.absent(),
     this.description = const Value.absent(),
     this.categoryLvl1 = const Value.absent(),
+    this.categoryLvl1Description = const Value.absent(),
     this.categoryLvl2 = const Value.absent(),
+    this.categoryLvl2Description = const Value.absent(),
+    this.categoryLvl2QuestionLabel = const Value.absent(),
     this.categoryLvl3 = const Value.absent(),
+    this.categoryLvl3Description = const Value.absent(),
+    this.categoryLvl3QuestionLabel = const Value.absent(),
     this.images = const Value.absent(),
+    this.assignedStaff = const Value.absent(),
     this.notes = const Value.absent(),
-  })  : internalIssueId = Value(internalIssueId),
-        userServerId = Value(userServerId);
+    this.lastUpdate = const Value.absent(),
+  }) : userServerId = Value(userServerId);
   static Insertable<Issue> custom({
-    Expression<int>? internalIssueId,
+    Expression<int?>? internalIssueId,
     Expression<int>? serverIssueId,
     Expression<int>? userServerId,
     Expression<String?>? address,
@@ -724,10 +855,17 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     Expression<int>? vote,
     Expression<String?>? description,
     Expression<int?>? categoryLvl1,
+    Expression<String?>? categoryLvl1Description,
     Expression<int?>? categoryLvl2,
+    Expression<String?>? categoryLvl2Description,
+    Expression<String?>? categoryLvl2QuestionLabel,
     Expression<int?>? categoryLvl3,
+    Expression<String?>? categoryLvl3Description,
+    Expression<String?>? categoryLvl3QuestionLabel,
     Expression<String?>? images,
+    Expression<int?>? assignedStaff,
     Expression<String?>? notes,
+    Expression<DateTime?>? lastUpdate,
   }) {
     return RawValuesInsertable({
       if (internalIssueId != null) 'internal_issue_id': internalIssueId,
@@ -740,15 +878,27 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
       if (vote != null) 'vote': vote,
       if (description != null) 'description': description,
       if (categoryLvl1 != null) 'category_lvl1': categoryLvl1,
+      if (categoryLvl1Description != null)
+        'category_lvl1_description': categoryLvl1Description,
       if (categoryLvl2 != null) 'category_lvl2': categoryLvl2,
+      if (categoryLvl2Description != null)
+        'category_lvl2_description': categoryLvl2Description,
+      if (categoryLvl2QuestionLabel != null)
+        'category_lvl2_question_label': categoryLvl2QuestionLabel,
       if (categoryLvl3 != null) 'category_lvl3': categoryLvl3,
+      if (categoryLvl3Description != null)
+        'category_lvl3_description': categoryLvl3Description,
+      if (categoryLvl3QuestionLabel != null)
+        'category_lvl3_question_label': categoryLvl3QuestionLabel,
       if (images != null) 'images': images,
+      if (assignedStaff != null) 'assigned_staff': assignedStaff,
       if (notes != null) 'notes': notes,
+      if (lastUpdate != null) 'last_update': lastUpdate,
     });
   }
 
   IssuesCompanion copyWith(
-      {Value<int>? internalIssueId,
+      {Value<int?>? internalIssueId,
       Value<int>? serverIssueId,
       Value<int>? userServerId,
       Value<String?>? address,
@@ -758,10 +908,17 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
       Value<int>? vote,
       Value<String?>? description,
       Value<int?>? categoryLvl1,
+      Value<String?>? categoryLvl1Description,
       Value<int?>? categoryLvl2,
+      Value<String?>? categoryLvl2Description,
+      Value<String?>? categoryLvl2QuestionLabel,
       Value<int?>? categoryLvl3,
+      Value<String?>? categoryLvl3Description,
+      Value<String?>? categoryLvl3QuestionLabel,
       Value<String?>? images,
-      Value<String?>? notes}) {
+      Value<int?>? assignedStaff,
+      Value<String?>? notes,
+      Value<DateTime?>? lastUpdate}) {
     return IssuesCompanion(
       internalIssueId: internalIssueId ?? this.internalIssueId,
       serverIssueId: serverIssueId ?? this.serverIssueId,
@@ -773,10 +930,22 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
       vote: vote ?? this.vote,
       description: description ?? this.description,
       categoryLvl1: categoryLvl1 ?? this.categoryLvl1,
+      categoryLvl1Description:
+          categoryLvl1Description ?? this.categoryLvl1Description,
       categoryLvl2: categoryLvl2 ?? this.categoryLvl2,
+      categoryLvl2Description:
+          categoryLvl2Description ?? this.categoryLvl2Description,
+      categoryLvl2QuestionLabel:
+          categoryLvl2QuestionLabel ?? this.categoryLvl2QuestionLabel,
       categoryLvl3: categoryLvl3 ?? this.categoryLvl3,
+      categoryLvl3Description:
+          categoryLvl3Description ?? this.categoryLvl3Description,
+      categoryLvl3QuestionLabel:
+          categoryLvl3QuestionLabel ?? this.categoryLvl3QuestionLabel,
       images: images ?? this.images,
+      assignedStaff: assignedStaff ?? this.assignedStaff,
       notes: notes ?? this.notes,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
     );
   }
 
@@ -784,7 +953,7 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (internalIssueId.present) {
-      map['internal_issue_id'] = Variable<int>(internalIssueId.value);
+      map['internal_issue_id'] = Variable<int?>(internalIssueId.value);
     }
     if (serverIssueId.present) {
       map['server_issue_id'] = Variable<int>(serverIssueId.value);
@@ -813,17 +982,43 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
     if (categoryLvl1.present) {
       map['category_lvl1'] = Variable<int?>(categoryLvl1.value);
     }
+    if (categoryLvl1Description.present) {
+      map['category_lvl1_description'] =
+          Variable<String?>(categoryLvl1Description.value);
+    }
     if (categoryLvl2.present) {
       map['category_lvl2'] = Variable<int?>(categoryLvl2.value);
+    }
+    if (categoryLvl2Description.present) {
+      map['category_lvl2_description'] =
+          Variable<String?>(categoryLvl2Description.value);
+    }
+    if (categoryLvl2QuestionLabel.present) {
+      map['category_lvl2_question_label'] =
+          Variable<String?>(categoryLvl2QuestionLabel.value);
     }
     if (categoryLvl3.present) {
       map['category_lvl3'] = Variable<int?>(categoryLvl3.value);
     }
+    if (categoryLvl3Description.present) {
+      map['category_lvl3_description'] =
+          Variable<String?>(categoryLvl3Description.value);
+    }
+    if (categoryLvl3QuestionLabel.present) {
+      map['category_lvl3_question_label'] =
+          Variable<String?>(categoryLvl3QuestionLabel.value);
+    }
     if (images.present) {
       map['images'] = Variable<String?>(images.value);
     }
+    if (assignedStaff.present) {
+      map['assigned_staff'] = Variable<int?>(assignedStaff.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String?>(notes.value);
+    }
+    if (lastUpdate.present) {
+      map['last_update'] = Variable<DateTime?>(lastUpdate.value);
     }
     return map;
   }
@@ -841,10 +1036,17 @@ class IssuesCompanion extends UpdateCompanion<Issue> {
           ..write('vote: $vote, ')
           ..write('description: $description, ')
           ..write('categoryLvl1: $categoryLvl1, ')
+          ..write('categoryLvl1Description: $categoryLvl1Description, ')
           ..write('categoryLvl2: $categoryLvl2, ')
+          ..write('categoryLvl2Description: $categoryLvl2Description, ')
+          ..write('categoryLvl2QuestionLabel: $categoryLvl2QuestionLabel, ')
           ..write('categoryLvl3: $categoryLvl3, ')
+          ..write('categoryLvl3Description: $categoryLvl3Description, ')
+          ..write('categoryLvl3QuestionLabel: $categoryLvl3QuestionLabel, ')
           ..write('images: $images, ')
-          ..write('notes: $notes')
+          ..write('assignedStaff: $assignedStaff, ')
+          ..write('notes: $notes, ')
+          ..write('lastUpdate: $lastUpdate')
           ..write(')'))
         .toString();
   }
@@ -859,8 +1061,8 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
       const VerificationMeta('internalIssueId');
   @override
   late final GeneratedColumn<int?> internalIssueId = GeneratedColumn<int?>(
-      'internal_issue_id', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      'internal_issue_id', aliasedName, true,
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _serverIssueIdMeta =
       const VerificationMeta('serverIssueId');
   @override
@@ -912,28 +1114,71 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
   late final GeneratedColumn<int?> categoryLvl1 = GeneratedColumn<int?>(
       'category_lvl1', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
+  final VerificationMeta _categoryLvl1DescriptionMeta =
+      const VerificationMeta('categoryLvl1Description');
+  @override
+  late final GeneratedColumn<String?> categoryLvl1Description =
+      GeneratedColumn<String?>('category_lvl1_description', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _categoryLvl2Meta =
       const VerificationMeta('categoryLvl2');
   @override
   late final GeneratedColumn<int?> categoryLvl2 = GeneratedColumn<int?>(
       'category_lvl2', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
+  final VerificationMeta _categoryLvl2DescriptionMeta =
+      const VerificationMeta('categoryLvl2Description');
+  @override
+  late final GeneratedColumn<String?> categoryLvl2Description =
+      GeneratedColumn<String?>('category_lvl2_description', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
+  final VerificationMeta _categoryLvl2QuestionLabelMeta =
+      const VerificationMeta('categoryLvl2QuestionLabel');
+  @override
+  late final GeneratedColumn<String?> categoryLvl2QuestionLabel =
+      GeneratedColumn<String?>(
+          'category_lvl2_question_label', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _categoryLvl3Meta =
       const VerificationMeta('categoryLvl3');
   @override
   late final GeneratedColumn<int?> categoryLvl3 = GeneratedColumn<int?>(
       'category_lvl3', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
+  final VerificationMeta _categoryLvl3DescriptionMeta =
+      const VerificationMeta('categoryLvl3Description');
+  @override
+  late final GeneratedColumn<String?> categoryLvl3Description =
+      GeneratedColumn<String?>('category_lvl3_description', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
+  final VerificationMeta _categoryLvl3QuestionLabelMeta =
+      const VerificationMeta('categoryLvl3QuestionLabel');
+  @override
+  late final GeneratedColumn<String?> categoryLvl3QuestionLabel =
+      GeneratedColumn<String?>(
+          'category_lvl3_question_label', aliasedName, true,
+          type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _imagesMeta = const VerificationMeta('images');
   @override
   late final GeneratedColumn<String?> images = GeneratedColumn<String?>(
       'images', aliasedName, true,
       type: const StringType(), requiredDuringInsert: false);
+  final VerificationMeta _assignedStaffMeta =
+      const VerificationMeta('assignedStaff');
+  @override
+  late final GeneratedColumn<int?> assignedStaff = GeneratedColumn<int?>(
+      'assigned_staff', aliasedName, true,
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String?> notes = GeneratedColumn<String?>(
       'notes', aliasedName, true,
       type: const StringType(), requiredDuringInsert: false);
+  final VerificationMeta _lastUpdateMeta = const VerificationMeta('lastUpdate');
+  @override
+  late final GeneratedColumn<DateTime?> lastUpdate = GeneratedColumn<DateTime?>(
+      'last_update', aliasedName, true,
+      type: const IntType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         internalIssueId,
@@ -946,10 +1191,17 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
         vote,
         description,
         categoryLvl1,
+        categoryLvl1Description,
         categoryLvl2,
+        categoryLvl2Description,
+        categoryLvl2QuestionLabel,
         categoryLvl3,
+        categoryLvl3Description,
+        categoryLvl3QuestionLabel,
         images,
-        notes
+        assignedStaff,
+        notes,
+        lastUpdate
       ];
   @override
   String get aliasedName => _alias ?? 'issues';
@@ -965,8 +1217,6 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
           _internalIssueIdMeta,
           internalIssueId.isAcceptableOrUnknown(
               data['internal_issue_id']!, _internalIssueIdMeta));
-    } else if (isInserting) {
-      context.missing(_internalIssueIdMeta);
     }
     if (data.containsKey('server_issue_id')) {
       context.handle(
@@ -1014,11 +1264,32 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
           categoryLvl1.isAcceptableOrUnknown(
               data['category_lvl1']!, _categoryLvl1Meta));
     }
+    if (data.containsKey('category_lvl1_description')) {
+      context.handle(
+          _categoryLvl1DescriptionMeta,
+          categoryLvl1Description.isAcceptableOrUnknown(
+              data['category_lvl1_description']!,
+              _categoryLvl1DescriptionMeta));
+    }
     if (data.containsKey('category_lvl2')) {
       context.handle(
           _categoryLvl2Meta,
           categoryLvl2.isAcceptableOrUnknown(
               data['category_lvl2']!, _categoryLvl2Meta));
+    }
+    if (data.containsKey('category_lvl2_description')) {
+      context.handle(
+          _categoryLvl2DescriptionMeta,
+          categoryLvl2Description.isAcceptableOrUnknown(
+              data['category_lvl2_description']!,
+              _categoryLvl2DescriptionMeta));
+    }
+    if (data.containsKey('category_lvl2_question_label')) {
+      context.handle(
+          _categoryLvl2QuestionLabelMeta,
+          categoryLvl2QuestionLabel.isAcceptableOrUnknown(
+              data['category_lvl2_question_label']!,
+              _categoryLvl2QuestionLabelMeta));
     }
     if (data.containsKey('category_lvl3')) {
       context.handle(
@@ -1026,13 +1297,39 @@ class $IssuesTable extends Issues with TableInfo<$IssuesTable, Issue> {
           categoryLvl3.isAcceptableOrUnknown(
               data['category_lvl3']!, _categoryLvl3Meta));
     }
+    if (data.containsKey('category_lvl3_description')) {
+      context.handle(
+          _categoryLvl3DescriptionMeta,
+          categoryLvl3Description.isAcceptableOrUnknown(
+              data['category_lvl3_description']!,
+              _categoryLvl3DescriptionMeta));
+    }
+    if (data.containsKey('category_lvl3_question_label')) {
+      context.handle(
+          _categoryLvl3QuestionLabelMeta,
+          categoryLvl3QuestionLabel.isAcceptableOrUnknown(
+              data['category_lvl3_question_label']!,
+              _categoryLvl3QuestionLabelMeta));
+    }
     if (data.containsKey('images')) {
       context.handle(_imagesMeta,
           images.isAcceptableOrUnknown(data['images']!, _imagesMeta));
     }
+    if (data.containsKey('assigned_staff')) {
+      context.handle(
+          _assignedStaffMeta,
+          assignedStaff.isAcceptableOrUnknown(
+              data['assigned_staff']!, _assignedStaffMeta));
+    }
     if (data.containsKey('notes')) {
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('last_update')) {
+      context.handle(
+          _lastUpdateMeta,
+          lastUpdate.isAcceptableOrUnknown(
+              data['last_update']!, _lastUpdateMeta));
     }
     return context;
   }
@@ -1262,8 +1559,13 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
 class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String description;
+  final String? questionText;
   final int? parentId;
-  Category({required this.id, required this.description, this.parentId});
+  Category(
+      {required this.id,
+      required this.description,
+      this.questionText,
+      this.parentId});
   factory Category.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return Category(
@@ -1271,6 +1573,8 @@ class Category extends DataClass implements Insertable<Category> {
           .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       description: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}description'])!,
+      questionText: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}question_text']),
       parentId: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}parent_id']),
     );
@@ -1280,6 +1584,9 @@ class Category extends DataClass implements Insertable<Category> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['description'] = Variable<String>(description);
+    if (!nullToAbsent || questionText != null) {
+      map['question_text'] = Variable<String?>(questionText);
+    }
     if (!nullToAbsent || parentId != null) {
       map['parent_id'] = Variable<int?>(parentId);
     }
@@ -1290,6 +1597,9 @@ class Category extends DataClass implements Insertable<Category> {
     return CategoriesCompanion(
       id: Value(id),
       description: Value(description),
+      questionText: questionText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(questionText),
       parentId: parentId == null && nullToAbsent
           ? const Value.absent()
           : Value(parentId),
@@ -1300,24 +1610,32 @@ class Category extends DataClass implements Insertable<Category> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Category(
-      id: serializer.fromJson<int>(json['Category_ID']),
-      description: serializer.fromJson<String>(json['Category_ID']),
-      parentId: serializer.fromJson<int?>(json['Category_ID']),
+      id: serializer.fromJson<int>(json['id']),
+      description: serializer.fromJson<String>(json['description']),
+      questionText: serializer.fromJson<String?>(json['question']),
+      parentId: serializer.fromJson<int?>(json['parent_id']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'Category_ID': serializer.toJson<int>(id),
-      'Category_ID': serializer.toJson<String>(description),
-      'Category_ID': serializer.toJson<int?>(parentId),
+      'id': serializer.toJson<int>(id),
+      'description': serializer.toJson<String>(description),
+      'question': serializer.toJson<String?>(questionText),
+      'parent_id': serializer.toJson<int?>(parentId),
     };
   }
 
-  Category copyWith({int? id, String? description, int? parentId}) => Category(
+  Category copyWith(
+          {int? id,
+          String? description,
+          String? questionText,
+          int? parentId}) =>
+      Category(
         id: id ?? this.id,
         description: description ?? this.description,
+        questionText: questionText ?? this.questionText,
         parentId: parentId ?? this.parentId,
       );
   @override
@@ -1325,54 +1643,65 @@ class Category extends DataClass implements Insertable<Category> {
     return (StringBuffer('Category(')
           ..write('id: $id, ')
           ..write('description: $description, ')
+          ..write('questionText: $questionText, ')
           ..write('parentId: $parentId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, description, parentId);
+  int get hashCode => Object.hash(id, description, questionText, parentId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Category &&
           other.id == this.id &&
           other.description == this.description &&
+          other.questionText == this.questionText &&
           other.parentId == this.parentId);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<int> id;
   final Value<String> description;
+  final Value<String?> questionText;
   final Value<int?> parentId;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.description = const Value.absent(),
+    this.questionText = const Value.absent(),
     this.parentId = const Value.absent(),
   });
   CategoriesCompanion.insert({
     required int id,
     required String description,
+    this.questionText = const Value.absent(),
     this.parentId = const Value.absent(),
   })  : id = Value(id),
         description = Value(description);
   static Insertable<Category> custom({
     Expression<int>? id,
     Expression<String>? description,
+    Expression<String?>? questionText,
     Expression<int?>? parentId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (description != null) 'description': description,
+      if (questionText != null) 'question_text': questionText,
       if (parentId != null) 'parent_id': parentId,
     });
   }
 
   CategoriesCompanion copyWith(
-      {Value<int>? id, Value<String>? description, Value<int?>? parentId}) {
+      {Value<int>? id,
+      Value<String>? description,
+      Value<String?>? questionText,
+      Value<int?>? parentId}) {
     return CategoriesCompanion(
       id: id ?? this.id,
       description: description ?? this.description,
+      questionText: questionText ?? this.questionText,
       parentId: parentId ?? this.parentId,
     );
   }
@@ -1386,6 +1715,9 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (questionText.present) {
+      map['question_text'] = Variable<String?>(questionText.value);
+    }
     if (parentId.present) {
       map['parent_id'] = Variable<int?>(parentId.value);
     }
@@ -1397,6 +1729,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     return (StringBuffer('CategoriesCompanion(')
           ..write('id: $id, ')
           ..write('description: $description, ')
+          ..write('questionText: $questionText, ')
           ..write('parentId: $parentId')
           ..write(')'))
         .toString();
@@ -1420,13 +1753,20 @@ class $CategoriesTable extends Categories
   late final GeneratedColumn<String?> description = GeneratedColumn<String?>(
       'description', aliasedName, false,
       type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _questionTextMeta =
+      const VerificationMeta('questionText');
+  @override
+  late final GeneratedColumn<String?> questionText = GeneratedColumn<String?>(
+      'question_text', aliasedName, true,
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _parentIdMeta = const VerificationMeta('parentId');
   @override
   late final GeneratedColumn<int?> parentId = GeneratedColumn<int?>(
       'parent_id', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, description, parentId];
+  List<GeneratedColumn> get $columns =>
+      [id, description, questionText, parentId];
   @override
   String get aliasedName => _alias ?? 'categories';
   @override
@@ -1448,6 +1788,12 @@ class $CategoriesTable extends Categories
               data['description']!, _descriptionMeta));
     } else if (isInserting) {
       context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('question_text')) {
+      context.handle(
+          _questionTextMeta,
+          questionText.isAcceptableOrUnknown(
+              data['question_text']!, _questionTextMeta));
     }
     if (data.containsKey('parent_id')) {
       context.handle(_parentIdMeta,

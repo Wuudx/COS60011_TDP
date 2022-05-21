@@ -41,7 +41,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   final List<String> _photosUrls = [];
   final List<PhotoSource> _photosSources = [];
   final List<GalleryItem> _galleryItems = [];
-  bool submitPressed = false;
+  bool submitPressed = false, cat1Required = true, cat2Required = false, cat3Required = false;
 
   @override
   void initState() {
@@ -65,9 +65,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
   }
 
   _descriptionListener() {
-    _issue = _issue.copyWith(
-      description: drift.Value(description.text),
-    );
+    setState(() {
+      _issue = _issue.copyWith(
+        description: drift.Value(description.text),
+      );
+    });
   }
 
   _buildAddPhoto() {
@@ -177,6 +179,12 @@ class _IssueFormSectionState extends State<IssueFormSection> {
     );
   }
 
+  bool _canSubmit() =>
+      (_issue.description.value != null && _issue.description.value != '') &&
+      (!cat1Required || cat1Required && _issue.categoryLvl1.value != null) &&
+      (!cat2Required || cat2Required && _issue.categoryLvl2.value != null) &&
+      (!cat3Required || cat3Required && _issue.categoryLvl3.value != null);
+
   @override
   Widget build(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -186,6 +194,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
             future: database.getCategories(null),
             builder: (context, AsyncSnapshot<List<Category>> snapshot) {
               if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                cat2Required = true;
                 return Column(
                   children: [
                     GestureDetector(
@@ -198,10 +207,17 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                           ),
                         )
                             .then((value) {
-                          if (value != null) {
+                          if (value != null && value.id != _issue.categoryLvl1.value) {
                             setState(() {
                               _issue = _issue.copyWith(
                                 categoryLvl1: drift.Value(value!.id),
+                                categoryLvl1Description: drift.Value(value!.description),
+                                categoryLvl2QuestionLabel: drift.Value(value!.questionText),
+                                categoryLvl2: const drift.Value(null),
+                                categoryLvl2Description: const drift.Value(null),
+                                categoryLvl3QuestionLabel: const drift.Value(null),
+                                categoryLvl3: const drift.Value(null),
+                                categoryLvl3Description: const drift.Value(null),
                               );
                             });
                           }
@@ -221,7 +237,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    '${_issue.categoryLvl1.value ?? Strings.hntSelect}',
+                                    _issue.categoryLvl1Description.value ?? Strings.hntSelect,
                                     style: CustomTextStyles.formTextField(
                                       Colors.black.value,
                                     ),
@@ -242,6 +258,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                   ],
                 );
               } else {
+                cat1Required = false;
                 return Container();
               }
             },
@@ -253,6 +270,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               future: database.getCategories(_issue.categoryLvl1.value),
               builder: (context, AsyncSnapshot<List<Category>> snapshot) {
                 if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                  cat3Required = true;
                   return Column(
                     children: [
                       GestureDetector(
@@ -265,10 +283,14 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ),
                           )
                               .then((value) {
-                            if (value != null) {
+                            if (value != null && value.id != _issue.categoryLvl2.value) {
                               setState(() {
                                 _issue = _issue.copyWith(
                                   categoryLvl2: drift.Value(value!.id),
+                                  categoryLvl2Description: drift.Value(value!.description),
+                                  categoryLvl3QuestionLabel: drift.Value(value!.questionText),
+                                  categoryLvl3: const drift.Value(null),
+                                  categoryLvl3Description: const drift.Value(null),
                                 );
                               });
                             }
@@ -280,7 +302,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Strings.lblCategoryLvl2,
+                                _issue.categoryLvl2QuestionLabel.value ?? Strings.lblCategoryLvl2,
                                 style: CustomTextStyles.formTextField(Colors.black.value),
                               ),
                               Row(
@@ -288,7 +310,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      '${_issue.categoryLvl2.value ?? Strings.hntSelect}',
+                                      _issue.categoryLvl2Description.value ?? Strings.hntSelect,
                                       style: CustomTextStyles.formTextField(
                                         Colors.black.value,
                                       ),
@@ -309,6 +331,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                     ],
                   );
                 } else {
+                  cat2Required = false;
                   return Container();
                 }
               },
@@ -332,10 +355,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ),
                           )
                               .then((value) {
-                            if (value != null) {
+                            if (value != null && value.id != _issue.categoryLvl3.value) {
                               setState(() {
                                 _issue = _issue.copyWith(
                                   categoryLvl3: drift.Value(value!.id),
+                                  categoryLvl3Description: drift.Value(value!.description),
                                 );
                               });
                             }
@@ -347,7 +371,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Strings.lblCategoryLvl3,
+                                _issue.categoryLvl3QuestionLabel.value ?? Strings.lblCategoryLvl3,
                                 style: CustomTextStyles.formTextField(Colors.black.value),
                               ),
                               Row(
@@ -355,7 +379,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      '${_issue.categoryLvl3.value ?? Strings.hntSelect}',
+                                      _issue.categoryLvl3Description.value ?? Strings.hntSelect,
                                       style: CustomTextStyles.formTextField(
                                         Colors.black.value,
                                       ),
@@ -376,6 +400,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                     ],
                   );
                 } else {
+                  cat3Required = false;
                   return Container();
                 }
               },
@@ -451,9 +476,6 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                             ? Image.file(image)
                             : Image.network(_photosUrls[index - 1]),
                       ),
-                      onTap: () {
-                        Api().submitImage(image);
-                      },
                     ),
                     Positioned.fill(
                       child: Container(
@@ -481,44 +503,45 @@ class _IssueFormSectionState extends State<IssueFormSection> {
           ),
           //#endregion
           //#region Submit Button
-          FormWidgets.textButtonTB(
-            Strings.btnSubmit,
-            Colors.white,
-            Colors.green,
-            onClick: () async {
-              if (submitPressed) {
-                return;
-              }
-              setState(() {
-                submitPressed = true;
-              });
-              List<String> imgKeys = [];
-              for (File image in _photos) {
-                final imgKey = await Api().submitImage(image);
-                if (imgKey != null) {
-                  imgKeys.add(imgKey);
+          if (_canSubmit())
+            FormWidgets.textButtonTB(
+              Strings.btnSubmit,
+              Colors.white,
+              Colors.green,
+              onClick: () async {
+                if (submitPressed) {
+                  return;
                 }
-              }
-              final _submittedIssue = await Api().submitIssue(
-                _issue.copyWith(
-                  images: drift.Value(imgKeys.join(',')),
-                ),
-              );
-
-              if (_submittedIssue != null) {
-                await database.addIssue(_submittedIssue);
-
+                setState(() {
+                  submitPressed = true;
+                });
+                List<String> imgKeys = [];
                 for (File image in _photos) {
-                  await database.addImage(
-                    PhotosCompanion.insert(
-                      data: image.path,
-                      internalIssueId: _submittedIssue.internalIssueId.value,
-                    ),
-                  );
+                  final imgKey = await Api().submitImage(image);
+                  if (imgKey != null) {
+                    imgKeys.add(imgKey);
+                  }
                 }
-              }
-            },
-          ),
+                final _submittedIssue = await Api().submitIssue(
+                  _issue.copyWith(
+                    images: drift.Value(imgKeys.join(',')),
+                  ),
+                );
+
+                if (_submittedIssue != null) {
+                  await database.addIssue(_submittedIssue);
+
+                  for (File image in _photos) {
+                    await database.addImage(
+                      PhotosCompanion.insert(
+                        data: image.path,
+                        internalIssueId: _submittedIssue.internalIssueId.value!,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
           //#endregion
           //#region Cancel Button
           FormWidgets.textButtonTB(

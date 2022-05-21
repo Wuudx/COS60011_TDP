@@ -29,7 +29,9 @@ class _ListPageState extends State<ListPage> {
 
   getData() async {
     setState(() {
-      listToShow = widget.list.where((element) => element.description.contains(subtext)).toList();
+      listToShow = widget.list
+          .where((element) => element.description.toLowerCase().contains(subtext.toLowerCase()))
+          .toList();
     });
   }
 

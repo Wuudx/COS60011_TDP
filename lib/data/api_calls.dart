@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart';
 
 import 'db.dart';
 
@@ -21,12 +23,14 @@ class Api {
   Future<bool> userExist(String mobile) async {
     try {
       final response = await http.get(
-        Uri.parse('https://api.com/users?mobile=$mobile'),
+        Uri.parse(
+          'http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/user?mobile=$mobile',
+        ),
         headers: _getGetHeader(),
       );
 
       if (response.statusCode == 200) {
-        return true;
+        return jsonDecode(response.body).isNotEmpty;
       }
     } catch (e) {
       return false;
@@ -38,7 +42,7 @@ class Api {
   Future<void> requestOtp(String mobile, String? deviceId) async {
     try {
       await http.post(
-        Uri.parse('https://api.com/triger_otp'),
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/trigger_otp'),
         headers: _getPostHeader(),
         body: jsonEncode(<String, dynamic>{
           'mobile': mobile,
@@ -58,7 +62,13 @@ class Api {
 
     try {
       final response = await http.get(
-        Uri.parse('https://api.com/otp?mobile=$mobile&otp=$otp'),
+        Uri.parse(
+          'http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/otp'
+          '?'
+          'mobile=$mobile'
+          '&'
+          'otp=$otp',
+        ),
         headers: _getGetHeader(),
       );
 
@@ -75,12 +85,16 @@ class Api {
   Future<User?> getUser(String mobile) async {
     try {
       final response = await http.get(
-        Uri.parse('https://api.com/users?mobile=$mobile'),
+        Uri.parse(
+          'http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/user'
+          '?'
+          'mobile=$mobile',
+        ),
         headers: _getGetHeader(),
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
+        return User.fromJson(jsonDecode(response.body)[0]);
       }
     } catch (e) {
       return null;
@@ -95,15 +109,20 @@ class Api {
     }
 
     try {
-      final response = await http
-          .post(Uri.parse('https://api.com/register_user'), headers: _getPostHeader(), body: {
-        'mobile': userInfo.mobile,
-        'firstName': userInfo.firstName,
-        'lastName': userInfo.lastName,
-        'deviceId': userInfo.deviceId,
-      });
+      final response = await http.post(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/user'
+            '?'
+            'mobile=${userInfo.mobile}'
+            '&'
+            'first_name=${userInfo.firstName}'
+            '&'
+            'last_name=${userInfo.lastName}'
+            '&'
+            'device_id=${userInfo.deviceId}'),
+        headers: _getPostHeader(),
+      );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return User.fromJson(jsonDecode(response.body));
       }
     } catch (e) {
@@ -114,18 +133,44 @@ class Api {
   }
 
   Future<List<Category>?> getCategories() async {
-    final response = await http.post(
-      Uri.parse('https://api.com'),
-      headers: _getGetHeader(),
-    );
-
-    if (response.statusCode == 200) {
-      return _parseToList(
-        response.body,
-        (Map<String, dynamic> jsonMapObj) => Category.fromJson(
-          jsonMapObj,
-        ),
+    try {
+      final response = await http.get(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/category'),
+        headers: _getGetHeader(),
       );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Category.fromJson(
+            jsonMapObj,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
+  Future<List<Issue>?> getIssues() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'),
+        headers: _getPostHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Issue.fromJson(
+            jsonMapObj,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
     }
 
     return null;
@@ -134,26 +179,36 @@ class Api {
   Future<IssuesCompanion?> submitIssue(IssuesCompanion issue) async {
     try {
       final response = await http.post(
-        Uri.parse('https://api.com'),
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'
+            '?'
+            'internal_id=${issue.internalIssueId}'
+            '&'
+            'user_id=${issue.userServerId}'
+            '&'
+            'address=${issue.address}'
+            '&'
+            'lat=${issue.lat}'
+            '&'
+            'lon=${issue.long}'
+            '&'
+            'vote=${issue.vote}'
+            '&'
+            'description=${issue.description}'
+            '&'
+            'category_1=${issue.categoryLvl1}'
+            '&'
+            'category_2=${issue.categoryLvl2}'
+            '&'
+            'category_3=${issue.categoryLvl3}'
+            // '&'
+            // 'images=${issue.images}'
+            '&'
+            'notes=${issue.notes}'),
         headers: _getPostHeader(),
-        body: jsonEncode({
-          'User_ID': issue.userServerId,
-          'address': issue.address,
-          'lat': issue.lat,
-          'long': issue.long,
-          'status': issue.status,
-          'vote': issue.vote,
-          'description': issue.description,
-          'categoryLvl1': issue.categoryLvl1,
-          'categoryLvl2': issue.categoryLvl2,
-          'categoryLvl3': issue.categoryLvl3,
-          'images': issue.images,
-          'notes': issue.notes,
-        }),
       );
 
-      if (response.statusCode == 201) {
-        return issue.copyWith(serverIssueId: jsonDecode(response.body)['Server_Issue_ID']);
+      if (response.statusCode == 200) {
+        return issue.copyWith(serverIssueId: jsonDecode(response.body));
       }
     } catch (e) {
       return null;
@@ -169,7 +224,15 @@ class Api {
         Uri.parse('https://75kce59dya.execute-api.ap-southeast-2.amazonaws.com/uploads'),
       );
 
-      final imgBytes = image.readAsBytesSync();
+      final Uint8List imgBytes;
+
+      if (!image.path.endsWith('.jpg')) {
+        decodeImage(image.readAsBytesSync())!;
+        imgBytes = Uint8List.fromList(encodeJpg(decodeImage(image.readAsBytesSync())!));
+      } else {
+        imgBytes = image.readAsBytesSync();
+      }
+
       if (urlResponse.statusCode == 200) {
         final uploadUrlAndKey = jsonDecode(urlResponse.body);
         final imageUploadedResponse = await _client.put(
