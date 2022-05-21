@@ -1,4 +1,7 @@
 class Strings {
+  static const appCouncilReportingTool = 'Council\nReporting\nTool';
+  static const appCreatedBy = 'App created by';
+  static const appTeam = 'COS60011 - Team 4';
   static const btnBack = 'BACK';
   static const btnCancel = 'CANCEL';
   static const btnClose = 'CLOSE';
@@ -32,4 +35,5 @@ class Strings {
   static const txtStatusComplete = 'COMPLETED';
   static const txtStatusInProgress = 'IN_PROGRESS';
   static const txtStatusPending = 'PENDING';
+  static const txtVersion = 'Version: ';
 }

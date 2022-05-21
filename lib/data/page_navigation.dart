@@ -1,4 +1,5 @@
 import 'package:council_reporting/data/path_arguments.dart';
+import 'package:council_reporting/main.dart';
 import 'package:council_reporting/pages/complaint_list_page.dart';
 import 'package:council_reporting/pages/issue_form_page.dart';
 import 'package:council_reporting/pages/login_page.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 
 class PageName {
   static const complaint = '/complaint';
+  static const home = '/';
   static const login = '/login';
   static const map = '/map';
   static const myComplaints = '/my_complaints';
@@ -22,6 +24,11 @@ class PageName {
 class PageRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case PageName.home:
+        return PageRouteBuilder(
+          pageBuilder: (_, a1, a2) => const LandingPage(),
+        );
+
       case PageName.login:
         BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
@@ -33,7 +40,7 @@ class PageRoutes {
       case PageName.otp:
         RegisterArguments regArgs = settings.arguments as RegisterArguments;
         return PageRouteBuilder(
-          pageBuilder: (_, a1, a2) =>  OtpPage(
+          pageBuilder: (_, a1, a2) => OtpPage(
             userRegistrationInfo: regArgs.userRegistrationInfo,
           ),
         );

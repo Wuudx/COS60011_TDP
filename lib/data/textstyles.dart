@@ -33,4 +33,24 @@ class CustomTextStyles {
         color: Color(textColour),
         fontSize: 40,
       );
+
+  static appTitle(int textColour) => TextStyle(
+    color: Color(textColour),
+    fontSize: 40,
+  );
+
+  static appTeam(int textColour) => TextStyle(
+    color: Color(textColour),
+    fontSize: 25,
+  );
+
+  static createdByText(int textColour) => TextStyle(
+    color: Color(textColour),
+    fontSize: 16,
+  );
+
+  static smallLabelText(int textColour) => TextStyle(
+    color: Color(textColour),
+    fontSize: 13,
+  );
 }
