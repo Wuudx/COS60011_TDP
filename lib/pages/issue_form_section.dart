@@ -24,7 +24,7 @@ import 'list_page.dart';
 enum PhotoSource { file, network }
 
 class IssueFormSection extends StatefulWidget {
-  final User? user;
+  final User user;
   final LocationData? location;
   const IssueFormSection({required this.user, this.location, Key? key}) : super(key: key);
 
@@ -33,7 +33,7 @@ class IssueFormSection extends StatefulWidget {
 }
 
 class _IssueFormSectionState extends State<IssueFormSection> {
-  late User? _user;
+  late User _user;
   late DeviceDatabase database;
   TextEditingController description = TextEditingController();
   IssuesCompanion _issue = const IssuesCompanion();
@@ -48,12 +48,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
     super.initState();
     _user = widget.user;
     int issueId = Random.secure().nextInt(1 << 32);
-    if (_user != null) {
-      _issue = _issue.copyWith(
-        userServerId: drift.Value(_user!.id),
-        internalIssueId: drift.Value(issueId),
-      );
-    }
+    _issue = _issue.copyWith(
+      userServerId: drift.Value(_user.id),
+      internalIssueId: drift.Value(issueId),
+    );
+
     description.addListener(_descriptionListener);
   }
 

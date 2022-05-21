@@ -8,7 +8,7 @@ import '../data/geocoding.dart';
 import '../data/numbers.dart';
 
 class IssueFormPage extends StatelessWidget {
-  final User? user;
+  final User user;
   final LocationData? location;
 
   const IssueFormPage({required this.user, this.location, Key? key}) : super(key: key);

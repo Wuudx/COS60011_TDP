@@ -11,7 +11,7 @@ import '../data/strings.dart';
 import '../data/widgets.dart';
 
 class IssueSubmittedPage extends StatefulWidget {
-  final User? user;
+  final User user;
   final Issue issue;
 
   const IssueSubmittedPage({required this.user, required this.issue, Key? key}) : super(key: key);

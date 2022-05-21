@@ -3,7 +3,7 @@ import 'package:council_reporting/data/strings.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  final User? user;
+  final User user;
 
   const ProfilePage({required this.user, Key? key}) : super(key: key);
 
@@ -12,7 +12,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User? _user;
+  late User _user;
 
   @override
   void initState() {

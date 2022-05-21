@@ -49,7 +49,7 @@ class PageRoutes {
         BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => ProfilePage(
-            user: baseArgs.user,
+            user: baseArgs.user!,
           ),
         );
 
@@ -57,7 +57,7 @@ class PageRoutes {
         BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => MapPage(
-            user: baseArgs.user,
+            user: baseArgs.user!,
           ),
         );
 
@@ -65,7 +65,7 @@ class PageRoutes {
         BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => IssueFormPage(
-            user: baseArgs.user,
+            user: baseArgs.user!,
           ),
         );
 
@@ -73,7 +73,7 @@ class PageRoutes {
         BaseArguments baseArgs = settings.arguments as BaseArguments;
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => ComplaintListPage(
-            user: baseArgs.user,
+            user: baseArgs.user!,
           ),
         );
 
