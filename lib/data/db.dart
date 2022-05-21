@@ -175,8 +175,9 @@ class DeviceDatabase extends _$DeviceDatabase {
     });
   }
 
-  Future<List<Category>> getCategories(int? id) async =>
-      (select(categories)..where((tbl) => tbl.parentId.equals(id))).get();
+  Future<List<Category>> getCategories(int? id) async => id != null
+      ? (select(categories)..where((tbl) => tbl.parentId.equals(id))).get()
+      : (select(categories)..where((tbl) => tbl.parentId.isNull())).get();
 
   Future<void> addImage(PhotosCompanion image) => into(photos).insert(image);
 
