@@ -18,13 +18,13 @@ class IssueModel extends Database {
             $query .= ' WHERE `' . implode(' AND `', $paramNames);
         }
 
-        $query .= ' ORDER BY `issue_id` ASC'; // Append the limit to the query
-        
         if (isset($limit) && $limit) { // If a limit param is given set it to that
             $params = $params + array('limit'=>$limit);
-
-            $query .= ' LIMIT ?';
+        } else { // otherwise always limit results to 10 to avoid fetching the whole database
+            $params = $params + array('limit'=>10);
         }
+
+        $query .= ' ORDER BY `issue_id` ASC LIMIT ?'; // Append the limit to the query
 
         return $this->select($query, array_values($params));
     }
@@ -50,7 +50,7 @@ class IssueModel extends Database {
                 array_push($paramNames, $key . '`=?'); // Array push -> name=?
             }
             
-            $query .= ' SET `' . implode(' AND `', $paramNames);
+            $query .= ' SET `' . implode(', `', $paramNames);
         }
 
         $params = $params + array('issue_id'=>$issueID); // Adding issue_id back for correct sql binding
