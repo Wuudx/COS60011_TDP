@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:drift/drift.dart';
@@ -163,10 +164,75 @@ class DeviceDatabase extends _$DeviceDatabase {
             m.drop(userVotes);
             m.createAll();
           }
+          if (from <= 2) {
+            m.drop(issues);
+            m.createTable(issues);
+          }
         },
       );
 
+  double _getDistanceMetresBetween(Distance distance, LatLng latLng1, LatLng latLng2) =>
+      distance.as(LengthUnit.Meter, latLng1, latLng2);
+
+  LatLng applyLatLng(LatLng ll, double lat, double lng) {
+    ll.latitude = lat;
+    ll.longitude = lng;
+    return ll;
+  }
+
   Future<int> addIssue(IssuesCompanion issue) => into(issues).insertOnConflictUpdate(issue);
+
+  Future<void> updateIssues(List<Issue> list) async {
+    final user = await (select(users)..limit(1)).getSingleOrNull();
+
+    return transaction(() async {
+      if (user != null) {
+        await (delete(issues)..where((tbl) => tbl.userServerId.equals(user.id).not())).go();
+      } else {
+        await delete(issues).go();
+      }
+      await batch(
+        (batch) => batch.insertAll(
+          issues,
+          list,
+          onConflict: DoUpdate.withExcluded(
+            (Issue old, Issue newest) => IssuesCompanion.custom(
+              status: Constant(newest.status),
+              assignedStaff: Constant(newest.assignedStaff),
+              vote: Constant(newest.vote),
+              lastUpdate: Constant(newest.lastUpdate),
+              lat: Constant(newest.lat),
+              long: Constant(newest.long),
+              address: Constant(newest.address),
+              notes: Constant(newest.notes),
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<List<Issue>> getIssuesWithinRadius(double lat, double long) async {
+    const Distance distance = Distance();
+    final userPosLatLng = LatLng(lat, long);
+    LatLng projectLatLng = LatLng(0, 0);
+
+    List<Issue> orderedList = await (select(issues)
+          // ..where(
+          //         (project) =>
+          //         isNotNull(project.lat) & project.lat.equals(0).not() &
+          //         isNotNull(project.long) & project.long.equals(0).not() &
+          //         isNotNull(project.radius) & project.radius.isBiggerThanValue(0)) // filter out projects that aren't valid
+          ..orderBy([(tbl) => OrderingTerm(expression: tbl.description, mode: OrderingMode.asc)]))
+        .get();
+
+    final filteredList = orderedList.where((project) {
+      applyLatLng(projectLatLng, project.lat!, project.long!);
+      return 2000 <= _getDistanceMetresBetween(distance, userPosLatLng, projectLatLng);
+    }).toList();
+
+    return filteredList;
+  }
 
   Future<void> updateCategories(List<Category> list) async {
     return transaction(() async {
