@@ -199,7 +199,12 @@ class _OtpPageState extends State<OtpPage> {
                             ),
                           ),
                         );
-                        User? userDetails = await api.submitUserInfo(widget.userRegistrationInfo);
+                        User? userDetails;
+                        if (widget.userRegistrationInfo.firstName != null) {
+                          userDetails = await api.submitUserInfo(widget.userRegistrationInfo);
+                        } else {
+                          userDetails = await api.getUser(widget.userRegistrationInfo.mobile);
+                        }
                         if (userDetails != null) {
                           final db = Provider.of<DeviceDatabase>(context, listen: false);
                           await db.updateUserInfo(userDetails);

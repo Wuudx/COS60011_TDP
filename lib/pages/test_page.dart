@@ -88,7 +88,7 @@ class TestPage extends StatelessWidget {
                     Navigator.of(context).pushNamed(
                       PageName.complaint,
                       arguments: BaseArguments(
-                        user: user,
+                        user: fakeUser,
                       ),
                     );
                   },

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:council_reporting/data/user_registration_info.dart';
+import 'package:drift/drift.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart';
 
 import 'db.dart';
 
-final user = User(
+final fakeUser = User(
   id: 1,
   deviceId: 'abc123def456ghi789k0',
   firstName: 'Test',
@@ -17,9 +17,10 @@ final user = User(
 );
 
 const fakeValidOtp = true;
-const fakeUser = true;
+const fakingUser = false;
 
 class Api {
+  final DateTimeValueSerializer? _dateTimeSerializer = const DateTimeValueSerializer();
   Future<bool> userExist(String mobile) async {
     try {
       final response = await http.get(
@@ -94,7 +95,7 @@ class Api {
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body)[0]);
+        return User.fromJson(jsonDecode(response.body)[0], serializer: _dateTimeSerializer);
       }
     } catch (e) {
       return null;
@@ -104,8 +105,8 @@ class Api {
   }
 
   Future<User?> submitUserInfo(UserRegistrationInfo userInfo) async {
-    if (fakeUser) {
-      return user;
+    if (fakingUser) {
+      return fakeUser;
     }
 
     try {
@@ -123,7 +124,8 @@ class Api {
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
+        return await getUser(userInfo.mobile);
+        // return User.fromJson(jsonDecode(response.body));
       }
     } catch (e) {
       return null;
@@ -166,6 +168,7 @@ class Api {
           response.body,
           (Map<String, dynamic> jsonMapObj) => Issue.fromJson(
             jsonMapObj,
+            serializer: _dateTimeSerializer,
           ),
         );
       }
@@ -274,5 +277,41 @@ class Api {
   Set<T> _parseToSet<T>(String responseBody, T Function(Map<String, dynamic>) processor) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<T>((jsonMapObj) => processor(jsonMapObj)).toSet();
+  }
+}
+
+class DateTimeValueSerializer extends ValueSerializer {
+  const DateTimeValueSerializer();
+
+  @override
+  T fromJson<T>(dynamic json) {
+    if (json == null) {
+      return null as T;
+    }
+
+    final _typeList = <T>[];
+
+    if (_typeList is List<DateTime> || _typeList is List<DateTime?>) {
+      return DateTime.tryParse(json as String) as T;
+    }
+
+    if ((_typeList is List<double> || _typeList is List<double?>) && json is int) {
+      return json.toDouble() as T;
+    }
+
+    if ((_typeList is List<double> || _typeList is List<double?>) && json is String) {
+      return double.parse(json) as T;
+    }
+
+    return json as T;
+  }
+
+  @override
+  dynamic toJson<T>(T value) {
+    if (value is DateTime) {
+      return value.toIso8601String();
+    }
+
+    return value;
   }
 }
