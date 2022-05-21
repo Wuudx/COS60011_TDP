@@ -33,14 +33,18 @@ class UserController extends BaseController {
                 }
             }
 
-            elseif ($uri[3] == 'rank') { // rank handling
+            elseif ($uri[3] == 'points') { // points handling
                 if (strtoupper($requestMethod) != 'GET') { // Valid request method
                     $requestMethod = null;
-                }
-
-                if (isset($uri[4])) { // rank given?
-                    $queryParams['rank'] = $uri[4];
                 } else {
+                    try { // Try query
+                        $data = $model->getUserPoints($queryParams);
+                        $responseData = json_encode($data);
+                    } catch (Error $e) { // Error
+                        $strErrorDesc = $e->getMessage().' Something went wrong! Please contact support.';
+                        $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                    }
+
                     $requestMethod = null;
                 }
             }

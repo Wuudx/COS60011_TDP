@@ -18,13 +18,13 @@ class IssueModel extends Database {
             $query .= ' WHERE `' . implode(' AND `', $paramNames);
         }
 
+        $query .= ' ORDER BY `issue_id` ASC'; // Append the limit to the query
+        
         if (isset($limit) && $limit) { // If a limit param is given set it to that
             $params = $params + array('limit'=>$limit);
-        } else { // otherwise always limit results to 10 to avoid fetching the whole database
-            $params = $params + array('limit'=>10);
-        }
 
-        $query .= ' ORDER BY `issue_id` ASC LIMIT ?'; // Append the limit to the query
+            $query .= ' LIMIT ?';
+        }
 
         return $this->select($query, array_values($params));
     }

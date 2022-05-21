@@ -18,13 +18,13 @@ class UserModel extends Database {
             $query .= ' WHERE `' . implode(' AND `', $paramNames);
         }
 
+        $query .= ' ORDER BY `user_id` ASC'; // Append the limit to the query
+        
         if (isset($limit) && $limit) { // If a limit param is given set it to that
             $params = $params + array('limit'=>$limit);
-        } else { // otherwise always limit results to 10 to avoid fetching the whole database
-            $params = $params + array('limit'=>10);
-        }
 
-        $query .= ' ORDER BY `user_id` ASC LIMIT ?'; // Append the limit to the query
+            $query .= ' LIMIT ?';
+        }
 
         return $this->select($query, array_values($params));
     }
@@ -35,6 +35,14 @@ class UserModel extends Database {
         $query = 'INSERT INTO `users` (`' . implode('`, `', array_keys($params)) . '`) VALUES (' . implode(', ', array_fill(0, count($params), '?')) . ')';
 
         return $this->insert($query, array_values($params));
+    }
+
+    public function getUserPoints($params = []) {
+        $query = 'SELECT * FROM `users` ORDER BY `points` ';
+
+        $query .= (isset($params['order']) ? $params['order'] : 'DESC');
+
+        return $this->select($query, null);
     }
 }
 ?>
