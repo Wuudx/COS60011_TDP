@@ -25,8 +25,8 @@ enum PhotoSource { file, network }
 
 class IssueFormSection extends StatefulWidget {
   final User user;
-  final LocationData? location;
-  const IssueFormSection({required this.user, this.location, Key? key}) : super(key: key);
+  final LocationData location;
+  const IssueFormSection({required this.user, required this.location, Key? key}) : super(key: key);
 
   @override
   _IssueFormSectionState createState() => _IssueFormSectionState();
@@ -51,6 +51,8 @@ class _IssueFormSectionState extends State<IssueFormSection> {
     _issue = _issue.copyWith(
       userServerId: drift.Value(_user.id),
       internalIssueId: drift.Value(issueId),
+      lat: drift.Value(widget.location.latitude),
+      long: drift.Value(widget.location.longitude),
     );
 
     description.addListener(_descriptionListener);

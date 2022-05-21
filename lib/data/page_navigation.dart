@@ -66,6 +66,7 @@ class PageRoutes {
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => IssueFormPage(
             user: baseArgs.user!,
+            location: baseArgs.location!,
           ),
         );
 
