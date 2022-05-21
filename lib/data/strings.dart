@@ -24,12 +24,12 @@ class Strings {
   static const popMobileNotExist = 'Account does not exist.\n\nSign up to create an account.';
   static const popNoInternetDetected = 'No Internet is detected.';
   static const popOtpNotValid = 'OTP is not valid.\n\nTry again.';
+  static const ttlSelectCategory = 'Select Category';
+  static const ttlEnterOtp = 'Enter 4-Digit OTP';
+  static const ttlWelcome = 'Welcome';
   static const txtNoItemsToShow = 'No items to show';
   static const txtNotImplemented = 'NOT CURRENTLY IMPLEMENTED';
   static const txtStatusComplete = 'COMPLETED';
   static const txtStatusInProgress = 'IN_PROGRESS';
   static const txtStatusPending = 'PENDING';
-  static const ttlSelectCategory = 'Select Category';
-  static const ttlEnterOtp = 'Enter 4-Digit OTP';
-  static const ttlWelcome = 'Welcome';
 }
