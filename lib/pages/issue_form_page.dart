@@ -45,27 +45,29 @@ class IssueFormPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FutureBuilder(
-                      future: _locationInfo(location),
-                      builder: (context, AsyncSnapshot futureSnapshot) {
-                        if (futureSnapshot.hasData) {
-                          return futureSnapshot.data;
-                        } else {
-                          return const CircularProgressIndicator();
-                        }
-                      },
-                    ),
-                    IssueFormSection(
-                      user: user,
-                      location: location,
-                    ),
-                  ],
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FutureBuilder(
+                        future: _locationInfo(location),
+                        builder: (context, AsyncSnapshot futureSnapshot) {
+                          if (futureSnapshot.hasData) {
+                            return futureSnapshot.data;
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                      IssueFormSection(
+                        user: user,
+                        location: location,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         ),
