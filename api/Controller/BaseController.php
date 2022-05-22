@@ -44,7 +44,7 @@ class BaseController {
             }
         }
  
-        echo $data;
+        echo empty($data) ? '{}' : $data; // If data empty, return empty object so its valid JSON
         exit;
     }
 }

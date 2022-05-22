@@ -30,7 +30,7 @@ class Database {
     public function insert($query = "", $params = []) {
         try {
             $stmt = $this->executeStatement($query, $params);
-            $result = $stmt->affected_rows;
+            $result = $stmt->insert_id;
 
             return $result;
         } catch (Error $e) {
@@ -41,14 +41,10 @@ class Database {
 
     public function update($query = '', $params = []) {
         try {
-            echo "\nquery: ".$query;
-            echo "\nparams: ".var_export($params);
             $stmt = $this->executeStatement($query, $params);
             $result = $stmt->affected_rows;
-            echo "\nresult: ".$result;
             return $result;
         } catch (Error $e) {
-            echo $e;
             throw New Exception($e->getMessage());
         }
         return false;

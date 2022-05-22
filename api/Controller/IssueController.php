@@ -37,7 +37,7 @@ class IssueController extends BaseController {
                 if (strtoupper($requestMethod) != ('GET'||'POST')) { // Valid request method
                     $requestMethod = null;
                 }
-
+                
                 if (isset($uri[4])) { // User_id given?
                     $queryParams['user_id'] = $uri[4];
                 } else {
