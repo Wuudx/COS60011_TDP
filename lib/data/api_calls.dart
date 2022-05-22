@@ -158,7 +158,7 @@ class Api {
 
   Future<List<Issue>?> getIssues() async {
     try {
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'),
         headers: _getPostHeader(),
       );
