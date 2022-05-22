@@ -22,12 +22,12 @@
     if(!$connection) {
         die("Conenction FAILED" . mysqli_error($connection));
     }
-    
+
     $query = "SELECT i.vote AS votes,
                      i.address AS address,
                      i.status AS status, 
-                     i.description AS issue,
-                     c.description AS category 
+                     c.description AS category,
+                     i.description AS issue 
               FROM issue AS i 
               INNER JOIN category AS c ON c.id = i.category_1 
               WHERE status != 'COMPLETED' 
@@ -45,7 +45,7 @@
                     <th scope="col">Address</th>
                     <th scope="col">Status</th>
                     <th scope="col">Issue</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Description</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,34 +53,28 @@
 <!-- Content of table -->
 <?php
     // row count for the table
-    $count = 0;
+    $count = 1;
 
     while($row = mysqli_fetch_assoc($result)) {
 
-        // skip the header row of SQL result
-        if($count == 0) {
-            $count ++;
-            continue;
-        } else {
-            
-            // Shorten the text in description column of issue table to 50 characters
-            if(strlen($row["issue"]) > 50) {
-                $row["issue"] = substr($row["issue"], 0, 50) . "...";
-            }
-
-            // fill in the table
-            echo "<tr>";
-            echo "<th scope='row'>" . $count . "</th>";
-            echo "<td>" . $row["votes"] . "</td>";
-            echo "<td>" . $row["address"] . "</td>";
-            echo "<td>" . strtolower($row["status"]) . "</td>";
-            echo "<td>" . $row["issue"] . "</td>";
-            echo "<td>" . $row["category"] . "</td>";
-            echo "</tr>";
-            $count++;
+        // Shorten the text in description column of issue table to 50 characters
+        if(strlen($row["issue"]) > 50) {
+            $row["issue"] = substr($row["issue"], 0, 50) . "...";
         }
-    }
 
+        // fill in the table
+        echo "<tr>";
+        echo "<th scope='row'>" . $count . "</th>";
+        echo "<td>" . $row["votes"] . "</td>";
+        echo "<td>" . $row["address"] . "</td>";
+        echo "<td>" . strtolower($row["status"]) . "</td>";
+        echo "<td>" . $row["category"] . "</td>";
+        echo "<td>" . $row["issue"] . "</td>";
+        echo "</tr>";
+        $count++;
+}
+
+    // add closing tags
     echo "</tbody>";
     echo "</table>";
 ?>
