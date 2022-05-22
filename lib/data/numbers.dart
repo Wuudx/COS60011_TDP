@@ -1,4 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+
+class FakeLocation {
+  static double _randomDouble(Random source, double min, double max) {
+    return source.nextDouble() * (max - min) + min;
+  }
+
+  static LatLng random() {
+    Random random = Random();
+    return LatLng(
+      _randomDouble(random, -37.823118, -37.819758),
+      _randomDouble(random, 145.035384, 145.040224),
+    );
+  }
+}
 
 class Dimensions {
   static const btnHeight60 = 60.0;
