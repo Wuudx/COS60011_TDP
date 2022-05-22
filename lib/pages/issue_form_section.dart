@@ -510,6 +510,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               Colors.white,
               Colors.green,
               onClick: () async {
+                FocusScope.of(context).unfocus();
                 if (submitPressed) {
                   return;
                 }
@@ -540,6 +541,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                       ),
                     );
                   }
+                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -549,8 +551,9 @@ class _IssueFormSectionState extends State<IssueFormSection> {
             Strings.btnCancel,
             Colors.white,
             Colors.orange,
-            onClick: () => {
-              if (Navigator.of(context).canPop()) Navigator.of(context).pop(),
+            onClick: () {
+              FocusScope.of(context).unfocus();
+              if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             },
           ),
           //#endregion
