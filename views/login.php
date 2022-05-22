@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         $model = new StaffModel();
         $data = $model->getUserByEmail($email);
 
-        if (count($data > 0))
+        if (count($data) > 0)
         {
             $user = $data[0];
             if ($password == $user['password']) // TODO: use password hashes
