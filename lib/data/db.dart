@@ -191,26 +191,27 @@ class DeviceDatabase extends _$DeviceDatabase {
       } else {
         await delete(issues).go();
       }
-      await batch(
-        (batch) => batch.insertAll(
-          issues,
-          list,
-          onConflict: DoUpdate.withExcluded(
-            (Issue old, Issue newest) => IssuesCompanion.custom(
-              status: Constant(newest.status),
-              assignedStaff: Constant(newest.assignedStaff),
-              vote: Constant(newest.vote),
-              lastUpdate: Constant(newest.lastUpdate),
-              lat: Constant(newest.lat),
-              long: Constant(newest.long),
-              address: Constant(newest.address),
-              notes: Constant(newest.notes),
-            ),
-          ),
-        ),
-      );
+      for (Issue issue in list) {
+        await addIssueOrUpdate(issue);
+      }
     });
   }
+
+  Future<void> addIssueOrUpdate(Issue issue) => (into(issues).insert(
+        IssuesCompanion.insert(userServerId: issue.serverIssueId),
+        onConflict: DoUpdate.withExcluded(
+          (old, newest) => IssuesCompanion.custom(
+            status: newest.status.dartCast(),
+            assignedStaff: newest.assignedStaff.dartCast(),
+            vote: newest.vote.dartCast(),
+            lastUpdate: newest.lastUpdate.dartCast(),
+            lat: newest.lat.dartCast(),
+            long: newest.long.dartCast(),
+            address: newest.address.dartCast(),
+            notes: newest.notes.dartCast(),
+          ),
+        ),
+      ));
 
   Future<List<Issue>> getIssuesWithinRadius(double lat, double long) async {
     const Distance distance = Distance();
@@ -227,12 +228,14 @@ class DeviceDatabase extends _$DeviceDatabase {
         .get();
 
     final filteredList = orderedList.where((project) {
-      applyLatLng(projectLatLng, project.lat!, project.long!);
-      return 2000 <= _getDistanceMetresBetween(distance, userPosLatLng, projectLatLng);
+      applyLatLng(projectLatLng, project.lat ?? 0, project.long ?? 0);
+      return 150 >= _getDistanceMetresBetween(distance, userPosLatLng, projectLatLng);
     }).toList();
 
     return filteredList;
   }
+
+  Future<List<Issue>> getAllIssues() => (select(issues)).get();
 
   Future<void> updateCategories(List<Category> list) async {
     return transaction(() async {
