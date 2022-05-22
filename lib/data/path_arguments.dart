@@ -5,11 +5,19 @@ import 'db.dart';
 
 class BaseArguments {
   User? user;
-  LocationData? location;
 
   BaseArguments({
     required this.user,
-    this.location,
+  });
+}
+
+class IssueArguments {
+  User user;
+  LocationData location;
+
+  IssueArguments({
+    required this.user,
+    required this.location,
   });
 }
 

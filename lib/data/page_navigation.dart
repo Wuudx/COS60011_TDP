@@ -62,11 +62,11 @@ class PageRoutes {
         );
 
       case PageName.complaint:
-        BaseArguments baseArgs = settings.arguments as BaseArguments;
+        IssueArguments issueArgs = settings.arguments as IssueArguments;
         return PageRouteBuilder(
           pageBuilder: (_, a1, a2) => IssueFormPage(
-            user: baseArgs.user!,
-            location: baseArgs.location!,
+            user: issueArgs.user,
+            location: issueArgs.location,
           ),
         );
 
