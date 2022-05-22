@@ -10,7 +10,7 @@ class FormWidgets {
         thickness: 1.0,
         height: 5.0,
       );
-  Widget textButtonGD(
+  static Widget textButtonGD(
     String text,
     Color textColour,
     Color buttonColour, {
@@ -45,7 +45,7 @@ class FormWidgets {
           ),
         ),
       );
-  Widget iconButtonGD(
+  static Widget iconButtonGD(
     IconData icon,
     double size,
     Color buttonColour,
@@ -126,16 +126,16 @@ class FormWidgets {
   }) =>
       Container(
         color: buttonColour,
-        child:IconButton(
-        onPressed: onClick,
-        icon: Icon(
-          icon,
-          size: size,
-          color: iconColour,
+        child: IconButton(
+          onPressed: onClick,
+          icon: Icon(
+            icon,
+            size: size,
+            color: iconColour,
+          ),
+          // color: buttonColour,
+          splashColor: Colors.black12,
         ),
-        // color: buttonColour,
-        splashColor: Colors.black12,
-      ),
       );
 
   static Widget _textField(
@@ -150,7 +150,7 @@ class FormWidgets {
     InputBorder border = InputBorder.none,
     TextInputType? inputType,
     List<TextInputFormatter>? inputFormatters,
-        bool? filled=false,
+    bool? filled = false,
     Color? backgroundColour,
   }) =>
       TextField(
@@ -182,7 +182,7 @@ class FormWidgets {
     String? hintText,
     String counterText = '',
     List<TextInputFormatter>? inputFormatters,
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
@@ -209,7 +209,7 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
@@ -240,7 +240,7 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
@@ -271,7 +271,7 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
@@ -300,7 +300,7 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
@@ -326,7 +326,7 @@ class FormWidgets {
     TextCapitalization capitalisation = TextCapitalization.none,
     String? hintText,
     String counterText = '',
-        bool? filled,
+    bool? filled,
     Color? backgroundColour,
   }) =>
       _textField(
