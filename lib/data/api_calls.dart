@@ -182,38 +182,27 @@ class Api {
   Future<IssuesCompanion?> submitIssue(IssuesCompanion issue) async {
     try {
       final response = await http.post(
-        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'
-            '?'
-            'internal_id=${issue.internalIssueId}'
-            '&'
-            'user_id=${issue.userServerId}'
-            '&'
-            'address=${issue.address}'
-            '&'
-            'lat=${issue.lat}'
-            '&'
-            'lon=${issue.long}'
-            '&'
-            'vote=${issue.vote}'
-            '&'
-            'description=${issue.description}'
-            '&'
-            'category_1=${issue.categoryLvl1}'
-            '&'
-            'category_2=${issue.categoryLvl2}'
-            '&'
-            'category_3=${issue.categoryLvl3}'
-            // '&'
-            // 'images=${issue.images}'
-            '&'
-            'notes=${issue.notes}'),
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue?' +
+            (issue.internalIssueId.value != null
+                ? 'internal_id=${issue.internalIssueId.value}'
+                : '') +
+            ('&user_id=${issue.userServerId.value}') +
+            (issue.address.value != null ? '&address=${issue.address.value}' : '') +
+            (issue.lat.value != null ? '&lat=${issue.lat.value}' : '') +
+            (issue.long.value != null ? '&lon=${issue.long.value}' : '') +
+            (issue.description.value != null ? '&description=${issue.description.value}' : '') +
+            (issue.categoryLvl1.value != null ? '&category_1=${issue.categoryLvl1.value}' : '') +
+            (issue.categoryLvl2.value != null ? '&category_2=${issue.categoryLvl2.value}' : '') +
+            (issue.categoryLvl3.value != null ? '&category_3=${issue.categoryLvl3.value}' : '') +
+            (issue.images.value != null ? '&images=${issue.images.value}' : '')),
         headers: _getPostHeader(),
       );
-
-      if (response.statusCode == 200) {
-        return issue.copyWith(serverIssueId: jsonDecode(response.body));
+      final decoded = jsonDecode(response.body);
+      if (response.statusCode == 200 && decoded != 0) {
+        return issue.copyWith(serverIssueId: Value(jsonDecode(response.body)));
       }
     } catch (e) {
+      print(e);
       return null;
     }
 
