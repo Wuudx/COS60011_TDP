@@ -4,7 +4,7 @@
     <img src="/assets/img/logo-icon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
     Council Reporting
   </a>
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="<?php if ($currentPage === '/') {echo 'active';} ?> nav-link" href="/">Home</a>
