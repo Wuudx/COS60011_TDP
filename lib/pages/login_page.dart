@@ -9,6 +9,7 @@ import 'package:council_reporting/data/textstyles.dart';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:council_reporting/data/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final User? user;
@@ -48,11 +49,19 @@ class _LoginPageState extends State<LoginPage> {
               widget.user!.firstName,
               Colors.black,
               Colors.white,
-              onClick: () {
+              onClick: () async {
+                User? userDetails = await Api().getUser(widget.user!.mobile);
+
+                if (userDetails != null) {
+                  final db = Provider.of<DeviceDatabase>(context, listen: false);
+                  await db.updateUserInfo(userDetails);
+                } else {
+                  userDetails = widget.user;
+                }
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   PageName.map,
                   (route) => false,
-                  arguments: BaseArguments(user: widget.user),
+                  arguments: BaseArguments(user: userDetails),
                 );
               },
             ),
