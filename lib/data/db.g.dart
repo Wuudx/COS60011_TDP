@@ -586,7 +586,7 @@ class Issue extends DataClass implements Insertable<Issue> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Issue(
-      internalIssueId: serializer.fromJson<int?>(json['Internal_Issue_ID']),
+      internalIssueId: serializer.fromJson<int?>(json['internal_id']),
       serverIssueId: serializer.fromJson<int>(json['issue_id']),
       userServerId: serializer.fromJson<int>(json['user_id']),
       address: serializer.fromJson<String?>(json['address']),
@@ -618,7 +618,7 @@ class Issue extends DataClass implements Insertable<Issue> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'Internal_Issue_ID': serializer.toJson<int?>(internalIssueId),
+      'internal_id': serializer.toJson<int?>(internalIssueId),
       'issue_id': serializer.toJson<int>(serverIssueId),
       'user_id': serializer.toJson<int>(userServerId),
       'address': serializer.toJson<String?>(address),

@@ -33,7 +33,7 @@ class Users extends Table {
 }
 
 class Issues extends Table {
-  @JsonKey("Internal_Issue_ID")
+  @JsonKey("internal_id")
   IntColumn get internalIssueId => integer().nullable()();
 
   @JsonKey("issue_id")
@@ -148,7 +148,7 @@ class DeviceDatabase extends _$DeviceDatabase {
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -164,7 +164,7 @@ class DeviceDatabase extends _$DeviceDatabase {
             m.drop(userVotes);
             m.createAll();
           }
-          if (from <= 2) {
+          if (from <= 3) {
             m.drop(issues);
             m.createTable(issues);
           }
@@ -198,7 +198,29 @@ class DeviceDatabase extends _$DeviceDatabase {
   }
 
   Future<void> addIssueOrUpdate(Issue issue) => (into(issues).insert(
-        IssuesCompanion.insert(userServerId: issue.serverIssueId),
+        IssuesCompanion.insert(
+          userServerId: issue.userServerId,
+          internalIssueId: Value(issue.internalIssueId),
+          serverIssueId: Value(issue.serverIssueId),
+          address: Value(issue.address),
+          lat: Value(issue.lat),
+          long: Value(issue.long),
+          status: Value(issue.status),
+          vote: Value(issue.vote),
+          description: Value(issue.description),
+          categoryLvl1: Value(issue.categoryLvl1),
+          categoryLvl1Description: const Value(null),
+          categoryLvl2: Value(issue.categoryLvl2),
+          categoryLvl2Description: const Value(null),
+          categoryLvl2QuestionLabel: const Value(null),
+          categoryLvl3: Value(issue.categoryLvl3),
+          categoryLvl3Description: const Value(null),
+          categoryLvl3QuestionLabel: const Value(null),
+          images: Value(issue.images),
+          assignedStaff: Value(issue.assignedStaff),
+          notes: Value(issue.notes),
+          lastUpdate: Value(issue.lastUpdate),
+        ),
         onConflict: DoUpdate.withExcluded(
           (old, newest) => IssuesCompanion.custom(
             status: newest.status.dartCast(),
