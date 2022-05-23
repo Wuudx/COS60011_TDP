@@ -237,6 +237,8 @@ class DeviceDatabase extends _$DeviceDatabase {
 
   Future<List<Issue>> getAllIssues() => (select(issues)).get();
 
+  Future<void> deleteAllIssues() => (delete(issues)).go();
+
   Future<void> updateCategories(List<Category> list) async {
     return transaction(() async {
       await delete(categories).go();
@@ -252,6 +254,8 @@ class DeviceDatabase extends _$DeviceDatabase {
 
   Future<List<Photo>> getImagesOfIssue(int internalId) =>
       (select(photos)..where((tbl) => tbl.internalIssueId.equals(internalId))).get();
+
+  Future<void> deleteAllImages() => delete(photos).go();
 
   Future<int> updateUserInfo(User user) async {
     return transaction(() async {
