@@ -90,6 +90,16 @@ class _MapPageState extends State<MapPage> {
                 },
               ),
               FormWidgets.textButtonTB(
+                'Print User issues',
+                Colors.white,
+                Colors.green,
+                onClick: () async {
+                  final list = await database.getIssuesOfUser(widget.user.id);
+                  print(list.length);
+                  print(list);
+                },
+              ),
+              FormWidgets.textButtonTB(
                 PageName.myComplaints,
                 Colors.white,
                 Colors.green,

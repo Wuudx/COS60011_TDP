@@ -257,6 +257,9 @@ class DeviceDatabase extends _$DeviceDatabase {
     return filteredList;
   }
 
+  Future<List<Issue>> getIssuesOfUser(int userId) =>
+      (select(issues)..where((tbl) => tbl.userServerId.equals(userId))).get();
+
   Future<List<Issue>> getAllIssues() => (select(issues)).get();
 
   Future<void> deleteAllIssues() => (delete(issues)).go();
