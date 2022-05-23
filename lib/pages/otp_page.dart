@@ -207,8 +207,8 @@ class _OtpPageState extends State<OtpPage> {
                         }
                         if (userDetails != null) {
                           final db = Provider.of<DeviceDatabase>(context, listen: false);
-                          db.deleteAllIssues();
-                          db.deleteAllImages();
+                          // db.deleteAllIssues();
+                          // db.deleteAllImages();
                           await db.updateUserInfo(userDetails);
                           // Navigator.of(context).pop();
                           Navigator.of(context).pushNamedAndRemoveUntil(

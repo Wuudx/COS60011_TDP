@@ -258,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   userExists = await Api().userExist(mobile);
 
-                  if (userExists && firstName == '') {
+                  if (!userExists && firstName == '') {
                     Navigator.of(context, rootNavigator: true).pop();
                     setState(() {
                       clicked = false;
@@ -345,7 +345,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     );
-                  } else if (userExists && firstName != '' || !userExists && firstName == '') {
+                  } else if (userExists && firstName == '' || !userExists && firstName != '') {
                     await Api().requestOtp(mobile, userRegistrationInfo.deviceId);
                     Navigator.of(context, rootNavigator: true).pop();
                     Navigator.of(context).pushNamed(
