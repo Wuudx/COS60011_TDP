@@ -25,6 +25,7 @@ class Strings {
   static const popCheckingNumber = 'Checking number.';
   static const popGettingInfo = 'Getting info.';
   static const popMobileNotExist = 'Account does not exist.\n\nSign up to create an account.';
+  static const popMobileExist = 'Account exist in server.\n\nLog in to use account.';
   static const popNoInternetDetected = 'No Internet is detected.';
   static const popOtpNotValid = 'OTP is not valid.\n\nTry again.';
   static const ttlSelectCategory = 'Select Category';
