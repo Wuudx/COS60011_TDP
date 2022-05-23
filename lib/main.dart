@@ -130,7 +130,7 @@ class MyHomePageState extends State<MyHomePage> {
                                         textAlign: TextAlign.left,
                                       ),
                                       Text(
-                                        "PUBLIC LITTER BINS - DAMAGED",
+                                        "PUBLIC LITTER BINS - DAMAGED ",
                                         style: TextStyle(
                                           fontSize:16, color:Colors.black,
                                         ),
