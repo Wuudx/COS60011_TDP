@@ -123,6 +123,7 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: Padding(
         padding: const EdgeInsets.only(
           left: Dimensions.margin15,

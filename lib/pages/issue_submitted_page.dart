@@ -59,6 +59,7 @@ class _IssueSubmittedPageState extends State<IssueSubmittedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(

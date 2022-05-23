@@ -37,6 +37,7 @@ class IssueFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(

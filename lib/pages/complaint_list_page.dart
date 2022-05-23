@@ -23,6 +23,7 @@ class _ComplaintListPageState extends State<ComplaintListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Center(
           child: Column(
