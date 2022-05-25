@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'data/api_calls.dart';
+import 'data/assets.dart';
 import 'data/numbers.dart';
 import 'data/strings.dart';
 import 'data/textstyles.dart';
@@ -78,14 +79,9 @@ class LandingPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(),
-              Column(
-                children: [
-                  Text(
-                    Strings.appCouncilReportingTool,
-                    style: CustomTextStyles.appTitle(Colors.black.value),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
+              const Image(
+                image: AssetImage(Assets.logo),
+                width: 300,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
