@@ -298,13 +298,13 @@ class DeviceDatabase extends _$DeviceDatabase {
 
   Future<void> updatePoints(List<Point> list) async {
     return transaction(() async {
-      // await delete(points).go();
+      await delete(points).go();
       await addPoints(list);
     });
   }
 
   Future<void> addPoints(List<Point> list) => batch((batch) {
-        batch.insertAll(points, list, mode: InsertMode.replace);
+        batch.insertAll(points, list);
       });
 
   Future<List<Point>> getAllIPoints() => (select(points)).get();
