@@ -64,6 +64,10 @@ class LandingPage extends StatelessWidget {
       if (categories != null) {
         await db.updateCategories(categories);
       }
+      final points = await api.getPoints();
+      if (points != null) {
+        await db.updatePoints(points);
+      }
       _nextPage(context, user);
     });
   }

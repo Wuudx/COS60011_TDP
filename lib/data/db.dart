@@ -124,6 +124,23 @@ class Categories extends Table {
   IntColumn get parentId => integer().nullable()();
 }
 
+class Points extends Table {
+  @JsonKey("user_id")
+  IntColumn get id => integer()();
+
+  @JsonKey("first_name")
+  TextColumn get firstName => text()();
+
+  @JsonKey("last_name")
+  TextColumn get lastName => text()();
+
+  @JsonKey("points")
+  IntColumn get points => integer().nullable()();
+
+  @override
+  Set<Column>? get primaryKey => {id};
+}
+
 LazyDatabase _openConnection() {
   // the LazyDatabase util lets us find the right location for the file async.
   return LazyDatabase(() async {
@@ -135,20 +152,14 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [
-  Users,
-  Issues,
-  Photos,
-  Categories,
-  UserVotes,
-])
+@DriftDatabase(tables: [Users, Issues, Photos, Categories, UserVotes, Points])
 class DeviceDatabase extends _$DeviceDatabase {
   DeviceDatabase() : super(_openConnection());
 
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -167,6 +178,9 @@ class DeviceDatabase extends _$DeviceDatabase {
           if (from <= 3) {
             m.drop(issues);
             m.createTable(issues);
+          }
+          if (from <= 4) {
+            m.createTable(points);
           }
         },
       );
@@ -281,6 +295,21 @@ class DeviceDatabase extends _$DeviceDatabase {
       (select(photos)..where((tbl) => tbl.internalIssueId.equals(internalId))).get();
 
   Future<void> deleteAllImages() => delete(photos).go();
+
+  Future<void> updatePoints(List<Point> list) async {
+    return transaction(() async {
+      // await delete(points).go();
+      await addPoints(list);
+    });
+  }
+
+  Future<void> addPoints(List<Point> list) => batch((batch) {
+        batch.insertAll(points, list, mode: InsertMode.replace);
+      });
+
+  Future<List<Point>> getAllIPoints() => (select(points)).get();
+
+  Future<void> deleteAllPoints() => (delete(points)).go();
 
   Future<int> updateUserInfo(User user) async {
     return transaction(() async {

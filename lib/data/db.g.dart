@@ -2112,6 +2112,252 @@ class $UserVotesTable extends UserVotes
   }
 }
 
+class Point extends DataClass implements Insertable<Point> {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final int? points;
+  Point(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      this.points});
+  factory Point.fromData(Map<String, dynamic> data, {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return Point(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      firstName: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}first_name'])!,
+      lastName: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_name'])!,
+      points: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}points']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['first_name'] = Variable<String>(firstName);
+    map['last_name'] = Variable<String>(lastName);
+    if (!nullToAbsent || points != null) {
+      map['points'] = Variable<int?>(points);
+    }
+    return map;
+  }
+
+  PointsCompanion toCompanion(bool nullToAbsent) {
+    return PointsCompanion(
+      id: Value(id),
+      firstName: Value(firstName),
+      lastName: Value(lastName),
+      points:
+          points == null && nullToAbsent ? const Value.absent() : Value(points),
+    );
+  }
+
+  factory Point.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Point(
+      id: serializer.fromJson<int>(json['user_id']),
+      firstName: serializer.fromJson<String>(json['first_name']),
+      lastName: serializer.fromJson<String>(json['last_name']),
+      points: serializer.fromJson<int?>(json['points']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'user_id': serializer.toJson<int>(id),
+      'first_name': serializer.toJson<String>(firstName),
+      'last_name': serializer.toJson<String>(lastName),
+      'points': serializer.toJson<int?>(points),
+    };
+  }
+
+  Point copyWith({int? id, String? firstName, String? lastName, int? points}) =>
+      Point(
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        points: points ?? this.points,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Point(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('points: $points')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, firstName, lastName, points);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Point &&
+          other.id == this.id &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.points == this.points);
+}
+
+class PointsCompanion extends UpdateCompanion<Point> {
+  final Value<int> id;
+  final Value<String> firstName;
+  final Value<String> lastName;
+  final Value<int?> points;
+  const PointsCompanion({
+    this.id = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.points = const Value.absent(),
+  });
+  PointsCompanion.insert({
+    required int id,
+    required String firstName,
+    required String lastName,
+    this.points = const Value.absent(),
+  })  : id = Value(id),
+        firstName = Value(firstName),
+        lastName = Value(lastName);
+  static Insertable<Point> custom({
+    Expression<int>? id,
+    Expression<String>? firstName,
+    Expression<String>? lastName,
+    Expression<int?>? points,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (points != null) 'points': points,
+    });
+  }
+
+  PointsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? firstName,
+      Value<String>? lastName,
+      Value<int?>? points}) {
+    return PointsCompanion(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      points: points ?? this.points,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (firstName.present) {
+      map['first_name'] = Variable<String>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String>(lastName.value);
+    }
+    if (points.present) {
+      map['points'] = Variable<int?>(points.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PointsCompanion(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('points: $points')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PointsTable extends Points with TableInfo<$PointsTable, Point> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PointsTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      type: const IntType(), requiredDuringInsert: true);
+  final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
+  @override
+  late final GeneratedColumn<String?> firstName = GeneratedColumn<String?>(
+      'first_name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _lastNameMeta = const VerificationMeta('lastName');
+  @override
+  late final GeneratedColumn<String?> lastName = GeneratedColumn<String?>(
+      'last_name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _pointsMeta = const VerificationMeta('points');
+  @override
+  late final GeneratedColumn<int?> points = GeneratedColumn<int?>(
+      'points', aliasedName, true,
+      type: const IntType(), requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, firstName, lastName, points];
+  @override
+  String get aliasedName => _alias ?? 'points';
+  @override
+  String get actualTableName => 'points';
+  @override
+  VerificationContext validateIntegrity(Insertable<Point> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(_firstNameMeta,
+          firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta));
+    } else if (isInserting) {
+      context.missing(_firstNameMeta);
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(_lastNameMeta,
+          lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta));
+    } else if (isInserting) {
+      context.missing(_lastNameMeta);
+    }
+    if (data.containsKey('points')) {
+      context.handle(_pointsMeta,
+          points.isAcceptableOrUnknown(data['points']!, _pointsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  @override
+  Point map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return Point.fromData(data,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $PointsTable createAlias(String alias) {
+    return $PointsTable(attachedDatabase, alias);
+  }
+}
+
 abstract class _$DeviceDatabase extends GeneratedDatabase {
   _$DeviceDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $UsersTable users = $UsersTable(this);
@@ -2119,9 +2365,10 @@ abstract class _$DeviceDatabase extends GeneratedDatabase {
   late final $PhotosTable photos = $PhotosTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $UserVotesTable userVotes = $UserVotesTable(this);
+  late final $PointsTable points = $PointsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [users, issues, photos, categories, userVotes];
+      [users, issues, photos, categories, userVotes, points];
 }

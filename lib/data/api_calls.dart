@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:drift/drift.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart';
+import 'package:image/image.dart' as img;
 
 import 'db.dart';
 
@@ -179,6 +179,29 @@ class Api {
     return null;
   }
 
+  Future<List<Point>?> getPoints() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/user/points'),
+        headers: _getPostHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Point.fromJson(
+            jsonMapObj,
+            serializer: _dateTimeSerializer,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
   Future<IssuesCompanion?> submitIssue(IssuesCompanion issue) async {
     try {
       final response = await http.post(
@@ -219,8 +242,8 @@ class Api {
       final Uint8List imgBytes;
 
       if (!image.path.endsWith('.jpg')) {
-        decodeImage(image.readAsBytesSync())!;
-        imgBytes = Uint8List.fromList(encodeJpg(decodeImage(image.readAsBytesSync())!));
+        img.decodeImage(image.readAsBytesSync())!;
+        imgBytes = Uint8List.fromList(img.encodeJpg(img.decodeImage(image.readAsBytesSync())!));
       } else {
         imgBytes = image.readAsBytesSync();
       }
