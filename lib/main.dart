@@ -11,9 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MyHomePage(),
     );
-
   }
-
 }
 
 class MyHomePage extends StatefulWidget {
@@ -29,6 +27,11 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: (null),
+          tooltip: 'Add Report',
+          child: const Icon(Icons.report_problem_outlined),
+        ),
         body: FlutterMap(
             options: MapOptions(
                 center: LatLng(-37.8221, 145.0389), minZoom: 10.0),
@@ -85,10 +88,22 @@ class MyHomePageState extends State<MyHomePage> {
                               return Dialog(
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                 elevation: 16,
-                                child: Container(
-                                  padding: EdgeInsets.all(20.0),
-                                  margin: EdgeInsets.all(10.0),
-                                  height: 430,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Container(
+                                          alignment: Alignment.topRight,
+                                          child: RawMaterialButton(
+                                            child: Icon(const IconData(0xe16a, fontFamily: 'MaterialIcons'), color: Colors.white),
+                                            fillColor: Colors.blue,
+                                            onPressed: () {Navigator.pop(context);
+                                            },
+                                            shape: CircleBorder(),
+                                          )
+                                      ),
+                                      Container(
+                                  padding: EdgeInsets.all(15.0),
+                                      margin: const EdgeInsets.only(left: 10, right: 10),                                  height: 450,
                                   width: 380,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,11 +111,11 @@ class MyHomePageState extends State<MyHomePage> {
                                       ClipRRect(
                                       borderRadius: BorderRadius.circular(5),
                                   ),
-                                      SizedBox(height: 165,
+                                      SizedBox(height: 160,
                                           child: Container(
                                               child: Image.network(
                                                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ScilDQPL3aCn4nEs6nWtMFxZMIhr2Vl5nA&usqp=CAU',
-                                                width: 440,
+                                                width: 360,
                                               )
                                           )
                                       ),
@@ -165,8 +180,7 @@ class MyHomePageState extends State<MyHomePage> {
                                         ),
                                       ),
                                       SizedBox(height: 30,
-                                        child: Container(
-                                          child:
+                                        child:
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               primary: Colors.lightBlue,
@@ -178,18 +192,16 @@ class MyHomePageState extends State<MyHomePage> {
                                             ),
                                           ),
                                       )
-                                      )
+
                                     ],
                                   ),
-
                                 ),
-
+                                    ]
+                                )
                               );
-
                             },
                           );
-                        }
-                        ,
+                        },
                       ),
                     )
                 )
@@ -251,7 +263,8 @@ class MyHomePageState extends State<MyHomePage> {
                     )
                 )
               ])
-            ])
+            ]
+        )
 
     );
 
