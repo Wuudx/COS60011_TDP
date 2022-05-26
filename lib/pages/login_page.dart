@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 onClick: () async {
                   FocusScope.of(context).unfocus();
                   if (clicked) {
-                    // return;
+                    return;
                   }
                   setState(() {
                     clicked = true;
