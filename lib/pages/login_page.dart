@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 onClick: () async {
                   FocusScope.of(context).unfocus();
                   if (clicked) {
-                    return;
+                    // return;
                   }
                   setState(() {
                     clicked = true;
@@ -311,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
                                               top: Dimensions.margin15,
                                             ),
                                             child: Text(
-                                              Strings.popMobileExist,
+                                              Strings.popMobileNotExist,
                                               textAlign: TextAlign.center,
                                               style: CustomTextStyles.popupText(
                                                 Colors.black.value,
@@ -405,7 +405,7 @@ class _LoginPageState extends State<LoginPage> {
                                               top: Dimensions.margin15,
                                             ),
                                             child: Text(
-                                              Strings.popMobileNotExist,
+                                              Strings.popMobileExist,
                                               textAlign: TextAlign.center,
                                               style: CustomTextStyles.popupText(
                                                 Colors.black.value,
