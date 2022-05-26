@@ -24,16 +24,16 @@ import 'list_page.dart';
 enum PhotoSource { file, network }
 
 class IssueFormSection extends StatefulWidget {
-  final User? user;
-  final LocationData? location;
-  const IssueFormSection({required this.user, this.location, Key? key}) : super(key: key);
+  final User user;
+  final LocationData location;
+  const IssueFormSection({required this.user, required this.location, Key? key}) : super(key: key);
 
   @override
   _IssueFormSectionState createState() => _IssueFormSectionState();
 }
 
 class _IssueFormSectionState extends State<IssueFormSection> {
-  late User? _user;
+  late User _user;
   late DeviceDatabase database;
   TextEditingController description = TextEditingController();
   IssuesCompanion _issue = const IssuesCompanion();
@@ -48,12 +48,14 @@ class _IssueFormSectionState extends State<IssueFormSection> {
     super.initState();
     _user = widget.user;
     int issueId = Random.secure().nextInt(1 << 32);
-    if (_user != null) {
-      _issue = _issue.copyWith(
-        userServerId: drift.Value(_user!.id),
-        internalIssueId: drift.Value(issueId),
-      );
-    }
+    _issue = _issue.copyWith(
+      userServerId: drift.Value(_user.id),
+      internalIssueId: drift.Value(issueId),
+      lat: drift.Value(widget.location.latitude),
+      long: drift.Value(widget.location.longitude),
+      status: const drift.Value(Strings.txtStatusPending),
+    );
+
     description.addListener(_descriptionListener);
   }
 
@@ -79,11 +81,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
         margin: const EdgeInsets.all(5),
         height: 100,
         width: 100,
-        color: Colours.kDarkGray,
+        color: Colors.white,
         child: const Center(
           child: Icon(
             MaterialIcons.add_to_photos,
-            color: Colours.kLightGray,
+            color: Colours.kDarkGray,
           ),
         ),
       ),
@@ -509,6 +511,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
               Colors.white,
               Colors.green,
               onClick: () async {
+                FocusScope.of(context).unfocus();
                 if (submitPressed) {
                   return;
                 }
@@ -539,6 +542,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
                       ),
                     );
                   }
+                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -548,8 +552,9 @@ class _IssueFormSectionState extends State<IssueFormSection> {
             Strings.btnCancel,
             Colors.white,
             Colors.orange,
-            onClick: () => {
-              if (Navigator.of(context).canPop()) Navigator.of(context).pop(),
+            onClick: () {
+              FocusScope.of(context).unfocus();
+              if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             },
           ),
           //#endregion

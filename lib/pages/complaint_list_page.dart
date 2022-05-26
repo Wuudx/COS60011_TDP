@@ -3,7 +3,7 @@ import 'package:council_reporting/data/strings.dart';
 import 'package:flutter/material.dart';
 
 class ComplaintListPage extends StatefulWidget {
-  final User? user;
+  final User user;
 
   const ComplaintListPage({required this.user, Key? key}) : super(key: key);
 
@@ -12,7 +12,7 @@ class ComplaintListPage extends StatefulWidget {
 }
 
 class _ComplaintListPageState extends State<ComplaintListPage> {
-  late User? _user;
+  late User _user;
 
   @override
   void initState() {
@@ -23,6 +23,7 @@ class _ComplaintListPageState extends State<ComplaintListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Center(
           child: Column(

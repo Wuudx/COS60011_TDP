@@ -11,7 +11,7 @@ import '../data/strings.dart';
 import '../data/widgets.dart';
 
 class IssueSubmittedPage extends StatefulWidget {
-  final User? user;
+  final User user;
   final Issue issue;
 
   const IssueSubmittedPage({required this.user, required this.issue, Key? key}) : super(key: key);
@@ -59,6 +59,7 @@ class _IssueSubmittedPageState extends State<IssueSubmittedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(

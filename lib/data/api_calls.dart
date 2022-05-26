@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:council_reporting/data/user_registration_info.dart';
+import 'package:drift/drift.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart';
+import 'package:image/image.dart' as img;
 
 import 'db.dart';
 
-final user = User(
+final fakeUser = User(
   id: 1,
   deviceId: 'abc123def456ghi789k0',
   firstName: 'Test',
@@ -17,9 +17,10 @@ final user = User(
 );
 
 const fakeValidOtp = true;
-const fakeUser = true;
+const fakingUser = false;
 
 class Api {
+  final DateTimeValueSerializer? _dateTimeSerializer = const DateTimeValueSerializer();
   Future<bool> userExist(String mobile) async {
     try {
       final response = await http.get(
@@ -94,7 +95,7 @@ class Api {
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body)[0]);
+        return User.fromJson(jsonDecode(response.body)[0], serializer: _dateTimeSerializer);
       }
     } catch (e) {
       return null;
@@ -104,8 +105,8 @@ class Api {
   }
 
   Future<User?> submitUserInfo(UserRegistrationInfo userInfo) async {
-    if (fakeUser) {
-      return user;
+    if (fakingUser) {
+      return fakeUser;
     }
 
     try {
@@ -123,7 +124,8 @@ class Api {
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
+        return await getUser(userInfo.mobile);
+        // return User.fromJson(jsonDecode(response.body));
       }
     } catch (e) {
       return null;
@@ -156,7 +158,7 @@ class Api {
 
   Future<List<Issue>?> getIssues() async {
     try {
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'),
         headers: _getPostHeader(),
       );
@@ -166,6 +168,30 @@ class Api {
           response.body,
           (Map<String, dynamic> jsonMapObj) => Issue.fromJson(
             jsonMapObj,
+            serializer: _dateTimeSerializer,
+          ),
+        );
+      }
+    } catch (e) {
+      return null;
+    }
+
+    return null;
+  }
+
+  Future<List<Point>?> getPoints() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/user/points'),
+        headers: _getPostHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        return _parseToList(
+          response.body,
+          (Map<String, dynamic> jsonMapObj) => Point.fromJson(
+            jsonMapObj,
+            serializer: _dateTimeSerializer,
           ),
         );
       }
@@ -179,38 +205,27 @@ class Api {
   Future<IssuesCompanion?> submitIssue(IssuesCompanion issue) async {
     try {
       final response = await http.post(
-        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue'
-            '?'
-            'internal_id=${issue.internalIssueId}'
-            '&'
-            'user_id=${issue.userServerId}'
-            '&'
-            'address=${issue.address}'
-            '&'
-            'lat=${issue.lat}'
-            '&'
-            'lon=${issue.long}'
-            '&'
-            'vote=${issue.vote}'
-            '&'
-            'description=${issue.description}'
-            '&'
-            'category_1=${issue.categoryLvl1}'
-            '&'
-            'category_2=${issue.categoryLvl2}'
-            '&'
-            'category_3=${issue.categoryLvl3}'
-            // '&'
-            // 'images=${issue.images}'
-            '&'
-            'notes=${issue.notes}'),
+        Uri.parse('http://ec2-54-206-191-64.ap-southeast-2.compute.amazonaws.com/api/issue?' +
+            (issue.internalIssueId.value != null
+                ? 'internal_id=${issue.internalIssueId.value}'
+                : '') +
+            ('&user_id=${issue.userServerId.value}') +
+            (issue.address.value != null ? '&address=${issue.address.value}' : '') +
+            (issue.lat.value != null ? '&lat=${issue.lat.value}' : '') +
+            (issue.long.value != null ? '&lon=${issue.long.value}' : '') +
+            (issue.description.value != null ? '&description=${issue.description.value}' : '') +
+            (issue.categoryLvl1.value != null ? '&category_1=${issue.categoryLvl1.value}' : '') +
+            (issue.categoryLvl2.value != null ? '&category_2=${issue.categoryLvl2.value}' : '') +
+            (issue.categoryLvl3.value != null ? '&category_3=${issue.categoryLvl3.value}' : '') +
+            (issue.images.value != null ? '&images=${issue.images.value}' : '')),
         headers: _getPostHeader(),
       );
-
-      if (response.statusCode == 200) {
-        return issue.copyWith(serverIssueId: jsonDecode(response.body));
+      final decoded = jsonDecode(response.body);
+      if (response.statusCode == 200 && decoded != 0) {
+        return issue.copyWith(serverIssueId: Value(jsonDecode(response.body)));
       }
     } catch (e) {
+      print(e);
       return null;
     }
 
@@ -227,8 +242,8 @@ class Api {
       final Uint8List imgBytes;
 
       if (!image.path.endsWith('.jpg')) {
-        decodeImage(image.readAsBytesSync())!;
-        imgBytes = Uint8List.fromList(encodeJpg(decodeImage(image.readAsBytesSync())!));
+        img.decodeImage(image.readAsBytesSync())!;
+        imgBytes = Uint8List.fromList(img.encodeJpg(img.decodeImage(image.readAsBytesSync())!));
       } else {
         imgBytes = image.readAsBytesSync();
       }
@@ -274,5 +289,41 @@ class Api {
   Set<T> _parseToSet<T>(String responseBody, T Function(Map<String, dynamic>) processor) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed.map<T>((jsonMapObj) => processor(jsonMapObj)).toSet();
+  }
+}
+
+class DateTimeValueSerializer extends ValueSerializer {
+  const DateTimeValueSerializer();
+
+  @override
+  T fromJson<T>(dynamic json) {
+    if (json == null) {
+      return null as T;
+    }
+
+    final _typeList = <T>[];
+
+    if (_typeList is List<DateTime> || _typeList is List<DateTime?>) {
+      return DateTime.tryParse(json as String) as T;
+    }
+
+    if ((_typeList is List<double> || _typeList is List<double?>) && json is int) {
+      return json.toDouble() as T;
+    }
+
+    if ((_typeList is List<double> || _typeList is List<double?>) && json is String) {
+      return double.parse(json) as T;
+    }
+
+    return json as T;
+  }
+
+  @override
+  dynamic toJson<T>(T value) {
+    if (value is DateTime) {
+      return value.toIso8601String();
+    }
+
+    return value;
   }
 }

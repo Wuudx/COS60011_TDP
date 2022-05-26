@@ -8,10 +8,10 @@ import '../data/geocoding.dart';
 import '../data/numbers.dart';
 
 class IssueFormPage extends StatelessWidget {
-  final User? user;
-  final LocationData? location;
+  final User user;
+  final LocationData location;
 
-  const IssueFormPage({required this.user, this.location, Key? key}) : super(key: key);
+  const IssueFormPage({required this.user, required this.location, Key? key}) : super(key: key);
 
   Future<Widget> _locationInfo(LocationData position) async {
     return Padding(
@@ -37,6 +37,7 @@ class IssueFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -45,29 +46,29 @@ class IssueFormPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    location != null
-                        ? FutureBuilder(
-                            future: _locationInfo(location!),
-                            builder: (context, AsyncSnapshot futureSnapshot) {
-                              if (futureSnapshot.hasData) {
-                                return futureSnapshot.data;
-                              } else {
-                                return const CircularProgressIndicator();
-                              }
-                            },
-                          )
-                        : Container(),
-                    IssueFormSection(
-                      user: user,
-                      location: location,
-                    ),
-                  ],
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FutureBuilder(
+                        future: _locationInfo(location),
+                        builder: (context, AsyncSnapshot futureSnapshot) {
+                          if (futureSnapshot.hasData) {
+                            return futureSnapshot.data;
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                      IssueFormSection(
+                        user: user,
+                        location: location,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         ),

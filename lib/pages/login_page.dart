@@ -9,6 +9,7 @@ import 'package:council_reporting/data/textstyles.dart';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:council_reporting/data/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final User? user;
@@ -48,8 +49,20 @@ class _LoginPageState extends State<LoginPage> {
               widget.user!.firstName,
               Colors.black,
               Colors.white,
-              onClick: () {
-                //TODO: Navigate to main page.
+              onClick: () async {
+                User? userDetails = await Api().getUser(widget.user!.mobile);
+
+                if (userDetails != null) {
+                  final db = Provider.of<DeviceDatabase>(context, listen: false);
+                  await db.updateUserInfo(userDetails);
+                } else {
+                  userDetails = widget.user;
+                }
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  PageName.map,
+                  (route) => false,
+                  arguments: BaseArguments(user: userDetails),
+                );
               },
             ),
           //#endregion
@@ -177,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 onClick: () async {
                   FocusScope.of(context).unfocus();
                   if (clicked) {
-                    return;
+                    // return;
                   }
                   setState(() {
                     clicked = true;
@@ -188,66 +201,153 @@ class _LoginPageState extends State<LoginPage> {
                     lastName: lastName != '' ? lastName : null,
                     deviceId: await DevicePlatform.getDeviceId(),
                   );
-                  bool navigateToToOtp = true;
-                  if (firstName == '') {
+                  bool userExists = false;
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => Dialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                      elevation: 0.0,
+                      backgroundColor: Colors.transparent,
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 0.0, right: 0.0),
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              top: Dimensions.margin15,
+                              left: Dimensions.margin15,
+                              right: Dimensions.margin15,
+                              bottom: Dimensions.margin15,
+                            ),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(Dimensions.radius10),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 0.0,
+                                    offset: Offset(0.0, 0.0),
+                                  ),
+                                ]),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                const CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: Dimensions.margin15),
+                                    child: Text(
+                                      Strings.popCheckingNumber,
+                                      textAlign: TextAlign.center,
+                                      style: CustomTextStyles.popupText(Colors.black.value),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                  userExists = await Api().userExist(mobile);
+
+                  if (!userExists && firstName == '') {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    setState(() {
+                      clicked = false;
+                    });
                     showDialog(
-                      context: context,
                       barrierDismissible: false,
+                      context: context,
                       builder: (_) => Dialog(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                         elevation: 0.0,
                         backgroundColor: Colors.transparent,
                         child: Container(
                           margin: const EdgeInsets.only(left: 0.0, right: 0.0),
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                top: Dimensions.margin15,
-                                left: Dimensions.margin15,
-                                right: Dimensions.margin15,
-                                bottom: Dimensions.margin15,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                    top: Dimensions.margin15,
+                                    left: Dimensions.margin15,
+                                    right: Dimensions.margin15,
+                                    bottom: Dimensions.margin15,
+                                  ),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(Dimensions.radius10),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 0.0,
+                                          offset: Offset(0.0, 0.0),
+                                        ),
+                                      ]),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.error_outline,
+                                          size: 100,
+                                          color: Colors.red,
+                                        ),
+                                        Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: Dimensions.margin15,
+                                            ),
+                                            child: Text(
+                                              Strings.popMobileNotExist,
+                                              textAlign: TextAlign.center,
+                                              style: CustomTextStyles.popupText(
+                                                Colors.black.value,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 24.0),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(Dimensions.radius10),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 0.0,
-                                      offset: Offset(0.0, 0.0),
-                                    ),
-                                  ]),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  const CircularProgressIndicator(
-                                    backgroundColor: Colors.white,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: Dimensions.margin15),
-                                      child: Text(
-                                        Strings.popCheckingNumber,
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyles.popupText(Colors.black.value),
-                                      ),
+                              const SizedBox(height: 24.0),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: FormWidgets.textButtonTB(
+                                      Strings.btnClose,
+                                      Colors.white,
+                                      Colors.red,
+                                      onClick: () {
+                                        Navigator.of(context).pop();
+                                      },
                                     ),
                                   ),
-                                  const SizedBox(height: 24.0),
                                 ],
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
                     );
-                    navigateToToOtp = await Api().userExist(mobile);
-                  }
-                  if (navigateToToOtp) {
+                  } else if (userExists && firstName == '' || !userExists && firstName != '') {
                     await Api().requestOtp(mobile, userRegistrationInfo.deviceId);
+                    Navigator.of(context, rootNavigator: true).pop();
                     Navigator.of(context).pushNamed(
                       PageName.otp,
                       arguments: RegisterArguments(userRegistrationInfo: userRegistrationInfo),
@@ -305,7 +405,7 @@ class _LoginPageState extends State<LoginPage> {
                                               top: Dimensions.margin15,
                                             ),
                                             child: Text(
-                                              Strings.popMobileNotExist,
+                                              Strings.popMobileExist,
                                               textAlign: TextAlign.center,
                                               style: CustomTextStyles.popupText(
                                                 Colors.black.value,

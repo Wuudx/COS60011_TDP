@@ -1,4 +1,7 @@
 class Strings {
+  static const appCouncilReportingTool = 'Council\nReporting\nTool';
+  static const appCreatedBy = 'App created by';
+  static const appTeam = 'COS60011 - Team 4';
   static const btnBack = 'BACK';
   static const btnCancel = 'CANCEL';
   static const btnClose = 'CLOSE';
@@ -22,14 +25,24 @@ class Strings {
   static const popCheckingNumber = 'Checking number.';
   static const popGettingInfo = 'Getting info.';
   static const popMobileNotExist = 'Account does not exist.\n\nSign up to create an account.';
+  static const popMobileExist = 'Account exist in server.\n\nLog in to use account.';
   static const popNoInternetDetected = 'No Internet is detected.';
   static const popOtpNotValid = 'OTP is not valid.\n\nTry again.';
+  static const ttlSelectCategory = 'Select Category';
+  static const ttlEnterOtp = 'Enter 4-Digit OTP';
+  static const ttlProfile = 'Profile';
+  static const ttlWelcome = 'Welcome';
+  static const txtCategory = 'Category:';
+  static const txtLastUpdateDate = 'Last update:';
+  static const txtLeaderboard = 'Leaderboard';
+  static const txtLikes = 'Likes';
   static const txtNoItemsToShow = 'No items to show';
   static const txtNotImplemented = 'NOT CURRENTLY IMPLEMENTED';
+  static const txtRank = 'Rank';
+  static const txtStatus = 'Status:';
   static const txtStatusComplete = 'COMPLETED';
   static const txtStatusInProgress = 'IN_PROGRESS';
   static const txtStatusPending = 'PENDING';
-  static const ttlSelectCategory = 'Select Category';
-  static const ttlEnterOtp = 'Enter 4-Digit OTP';
-  static const ttlWelcome = 'Welcome';
+  static const txtUnknownLocation = 'Location Unknown';
+  static const txtVersion = 'Version: ';
 }

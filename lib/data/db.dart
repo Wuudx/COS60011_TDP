@@ -33,7 +33,7 @@ class Users extends Table {
 }
 
 class Issues extends Table {
-  @JsonKey("Internal_Issue_ID")
+  @JsonKey("internal_id")
   IntColumn get internalIssueId => integer().nullable()();
 
   @JsonKey("issue_id")
@@ -124,6 +124,23 @@ class Categories extends Table {
   IntColumn get parentId => integer().nullable()();
 }
 
+class Points extends Table {
+  @JsonKey("user_id")
+  IntColumn get id => integer()();
+
+  @JsonKey("first_name")
+  TextColumn get firstName => text()();
+
+  @JsonKey("last_name")
+  TextColumn get lastName => text()();
+
+  @JsonKey("points")
+  IntColumn get points => integer().nullable()();
+
+  @override
+  Set<Column>? get primaryKey => {id};
+}
+
 LazyDatabase _openConnection() {
   // the LazyDatabase util lets us find the right location for the file async.
   return LazyDatabase(() async {
@@ -135,20 +152,14 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [
-  Users,
-  Issues,
-  Photos,
-  Categories,
-  UserVotes,
-])
+@DriftDatabase(tables: [Users, Issues, Photos, Categories, UserVotes, Points])
 class DeviceDatabase extends _$DeviceDatabase {
   DeviceDatabase() : super(_openConnection());
 
   // you should bump this number whenever you change or add a table definition. Migrations
   // are covered later in this readme.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -164,9 +175,12 @@ class DeviceDatabase extends _$DeviceDatabase {
             m.drop(userVotes);
             m.createAll();
           }
-          if (from <= 2) {
+          if (from <= 3) {
             m.drop(issues);
             m.createTable(issues);
+          }
+          if (from <= 4) {
+            m.createTable(points);
           }
         },
       );
@@ -191,26 +205,49 @@ class DeviceDatabase extends _$DeviceDatabase {
       } else {
         await delete(issues).go();
       }
-      await batch(
-        (batch) => batch.insertAll(
-          issues,
-          list,
-          onConflict: DoUpdate.withExcluded(
-            (Issue old, Issue newest) => IssuesCompanion.custom(
-              status: Constant(newest.status),
-              assignedStaff: Constant(newest.assignedStaff),
-              vote: Constant(newest.vote),
-              lastUpdate: Constant(newest.lastUpdate),
-              lat: Constant(newest.lat),
-              long: Constant(newest.long),
-              address: Constant(newest.address),
-              notes: Constant(newest.notes),
-            ),
-          ),
-        ),
-      );
+      for (Issue issue in list) {
+        await addIssueOrUpdate(issue);
+      }
     });
   }
+
+  Future<void> addIssueOrUpdate(Issue issue) => (into(issues).insert(
+        IssuesCompanion.insert(
+          userServerId: issue.userServerId,
+          internalIssueId: Value(issue.internalIssueId),
+          serverIssueId: Value(issue.serverIssueId),
+          address: Value(issue.address),
+          lat: Value(issue.lat),
+          long: Value(issue.long),
+          status: Value(issue.status),
+          vote: Value(issue.vote),
+          description: Value(issue.description),
+          categoryLvl1: Value(issue.categoryLvl1),
+          categoryLvl1Description: const Value(null),
+          categoryLvl2: Value(issue.categoryLvl2),
+          categoryLvl2Description: const Value(null),
+          categoryLvl2QuestionLabel: const Value(null),
+          categoryLvl3: Value(issue.categoryLvl3),
+          categoryLvl3Description: const Value(null),
+          categoryLvl3QuestionLabel: const Value(null),
+          images: Value(issue.images),
+          assignedStaff: Value(issue.assignedStaff),
+          notes: Value(issue.notes),
+          lastUpdate: Value(issue.lastUpdate),
+        ),
+        onConflict: DoUpdate.withExcluded(
+          (old, newest) => IssuesCompanion.custom(
+            status: newest.status.dartCast(),
+            assignedStaff: newest.assignedStaff.dartCast(),
+            vote: newest.vote.dartCast(),
+            lastUpdate: newest.lastUpdate.dartCast(),
+            lat: newest.lat.dartCast(),
+            long: newest.long.dartCast(),
+            address: newest.address.dartCast(),
+            notes: newest.notes.dartCast(),
+          ),
+        ),
+      ));
 
   Future<List<Issue>> getIssuesWithinRadius(double lat, double long) async {
     const Distance distance = Distance();
@@ -227,12 +264,19 @@ class DeviceDatabase extends _$DeviceDatabase {
         .get();
 
     final filteredList = orderedList.where((project) {
-      applyLatLng(projectLatLng, project.lat!, project.long!);
-      return 2000 <= _getDistanceMetresBetween(distance, userPosLatLng, projectLatLng);
+      applyLatLng(projectLatLng, project.lat ?? 0, project.long ?? 0);
+      return 150 >= _getDistanceMetresBetween(distance, userPosLatLng, projectLatLng);
     }).toList();
 
     return filteredList;
   }
+
+  Future<List<Issue>> getIssuesOfUser(int userId) =>
+      (select(issues)..where((tbl) => tbl.userServerId.equals(userId))).get();
+
+  Future<List<Issue>> getAllIssues() => (select(issues)).get();
+
+  Future<void> deleteAllIssues() => (delete(issues)).go();
 
   Future<void> updateCategories(List<Category> list) async {
     return transaction(() async {
@@ -249,6 +293,23 @@ class DeviceDatabase extends _$DeviceDatabase {
 
   Future<List<Photo>> getImagesOfIssue(int internalId) =>
       (select(photos)..where((tbl) => tbl.internalIssueId.equals(internalId))).get();
+
+  Future<void> deleteAllImages() => delete(photos).go();
+
+  Future<void> updatePoints(List<Point> list) async {
+    return transaction(() async {
+      await delete(points).go();
+      await addPoints(list);
+    });
+  }
+
+  Future<void> addPoints(List<Point> list) => batch((batch) {
+        batch.insertAll(points, list);
+      });
+
+  Future<List<Point>> getAllIPoints() => (select(points)).get();
+
+  Future<void> deleteAllPoints() => (delete(points)).go();
 
   Future<int> updateUserInfo(User user) async {
     return transaction(() async {

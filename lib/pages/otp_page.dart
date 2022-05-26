@@ -1,6 +1,8 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:council_reporting/data/db.dart';
+import 'package:council_reporting/data/device_info.dart';
 import 'package:council_reporting/data/page_navigation.dart';
+import 'package:council_reporting/data/path_arguments.dart';
 import 'package:council_reporting/data/strings.dart';
 import 'package:council_reporting/data/user_registration_info.dart';
 import 'package:council_reporting/data/widgets.dart';
@@ -197,16 +199,25 @@ class _OtpPageState extends State<OtpPage> {
                             ),
                           ),
                         );
-                        User? userDetails = await api.submitUserInfo(widget.userRegistrationInfo);
+                        User? userDetails;
+                        if (widget.userRegistrationInfo.firstName != null) {
+                          userDetails = await api.submitUserInfo(widget.userRegistrationInfo);
+                        } else {
+                          userDetails = await api.getUser(widget.userRegistrationInfo.mobile);
+                        }
                         if (userDetails != null) {
                           final db = Provider.of<DeviceDatabase>(context, listen: false);
+                          // db.deleteAllIssues();
+                          // db.deleteAllImages();
                           await db.updateUserInfo(userDetails);
                           // Navigator.of(context).pop();
-                          // TODO: Change navigation to correct route
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                            PageName.testPages,
+                            PageName.map,
                             (route) => false,
+                            arguments: BaseArguments(user: userDetails),
                           );
+                        } else {
+                          DevicePlatform.quitApp();
                         }
                       } else {
                         Navigator.of(context, rootNavigator: true).pop();
