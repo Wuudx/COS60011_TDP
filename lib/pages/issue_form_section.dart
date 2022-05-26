@@ -80,11 +80,11 @@ class _IssueFormSectionState extends State<IssueFormSection> {
         margin: const EdgeInsets.all(5),
         height: 100,
         width: 100,
-        color: Colours.kDarkGray,
+        color: Colors.white,
         child: const Center(
           child: Icon(
             MaterialIcons.add_to_photos,
-            color: Colours.kLightGray,
+            color: Colours.kDarkGray,
           ),
         ),
       ),
