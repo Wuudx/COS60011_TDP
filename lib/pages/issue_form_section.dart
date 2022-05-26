@@ -53,6 +53,7 @@ class _IssueFormSectionState extends State<IssueFormSection> {
       internalIssueId: drift.Value(issueId),
       lat: drift.Value(widget.location.latitude),
       long: drift.Value(widget.location.longitude),
+      status: const drift.Value(Strings.txtStatusPending),
     );
 
     description.addListener(_descriptionListener);
