@@ -22,8 +22,8 @@ class Dimensions {
   static const margin15 = 15.0;
   static const margin5 = 5.0;
   static const radius10 = 10.0;
-  static const staticMapHeight = 100.0;
-  static const staticMapWidth = 300.0;
+  static const staticMapHeight = 150.0;
+  static const staticMapWidth = 400.0;
 }
 
 class Colours {
