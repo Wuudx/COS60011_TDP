@@ -8,11 +8,22 @@ class FakeLocation {
     return source.nextDouble() * (max - min) + min;
   }
 
+  static double _midPointDouble(double min, double max) {
+    return (min + max) / 2;
+  }
+
   static LatLng random() {
     Random random = Random();
     return LatLng(
       _randomDouble(random, -37.823118, -37.819758),
       _randomDouble(random, 145.035384, 145.040224),
+    );
+  }
+
+  static LatLng midPoint() {
+    return LatLng(
+      _midPointDouble(-37.823118, -37.819758),
+      _midPointDouble(145.035384, 145.040224),
     );
   }
 }
