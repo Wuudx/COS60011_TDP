@@ -10,11 +10,9 @@ session_start();
 
 // If user not logged in redirect to login 
 if(!in_array($uri[1], ['login', 'api']) && !isset($_SESSION["loggedin"])) {
-    //header("location: login");
-    //exit;
+    header("location: login");
+    exit;
 }
-
-//echo "<h2>$route</h2>";
 
 switch ($uri[1]) {
     case '/' :
